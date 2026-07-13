@@ -815,7 +815,12 @@
     window.addFeeRow = function() {
       const dateStr = state.currentDate;
       if (!state.records[dateStr]) {
-        state.records[dateStr] = getFormInputs();
+        state.records[dateStr] = {
+          courtFee: Number(document.getElementById('input-court-fee').value) || 0,
+          shuttlecockId: document.getElementById('select-shuttlecock').value,
+          ballsUsed: Number(document.getElementById('input-balls-used').value) || 0,
+          fees: [{ price: 200, count: 5 }]
+        };
       }
       state.records[dateStr].fees.push({ price: 150, count: 1 });
       renderFeeRows(state.records[dateStr].fees);
@@ -824,7 +829,14 @@
 
     window.removeFeeRow = function(index) {
       const dateStr = state.currentDate;
-      if (!state.records[dateStr]) return;
+      if (!state.records[dateStr]) {
+        state.records[dateStr] = {
+          courtFee: Number(document.getElementById('input-court-fee').value) || 0,
+          shuttlecockId: document.getElementById('select-shuttlecock').value,
+          ballsUsed: Number(document.getElementById('input-balls-used').value) || 0,
+          fees: [{ price: 200, count: 5 }]
+        };
+      }
       state.records[dateStr].fees.splice(index, 1);
       
       if (state.records[dateStr].fees.length === 0) {
@@ -838,7 +850,16 @@
     window.updateFeeRow = function(index, field, value) {
       const dateStr = state.currentDate;
       if (!state.records[dateStr]) {
-        state.records[dateStr] = getFormInputs();
+        state.records[dateStr] = {
+          courtFee: Number(document.getElementById('input-court-fee').value) || 0,
+          shuttlecockId: document.getElementById('select-shuttlecock').value,
+          ballsUsed: Number(document.getElementById('input-balls-used').value) || 0,
+          fees: [{ price: 200, count: 5 }]
+        };
+      }
+      
+      if (!state.records[dateStr].fees[index]) {
+        state.records[dateStr].fees[index] = { price: 0, count: 0 };
       }
       
       state.records[dateStr].fees[index][field] = Number(value) || 0;
@@ -871,19 +892,14 @@
       const ballsUsed = Number(document.getElementById('input-balls-used').value) || 0;
       
       let fees = [];
-      const dateStr = state.currentDate;
-      if (state.records[dateStr]) {
-        fees = state.records[dateStr].fees;
-      } else {
-        const rows = document.getElementById('fee-rows-container').children;
-        for (let row of rows) {
-          const inputs = row.querySelectorAll('input');
-          if (inputs.length >= 2) {
-            fees.push({
-              price: Number(inputs[0].value) || 0,
-              count: Number(inputs[1].value) || 0
-            });
-          }
+      const rows = document.getElementById('fee-rows-container').children;
+      for (let row of rows) {
+        const inputs = row.querySelectorAll('input');
+        if (inputs.length >= 2) {
+          fees.push({
+            price: Number(inputs[0].value) || 0,
+            count: Number(inputs[1].value) || 0
+          });
         }
       }
 
