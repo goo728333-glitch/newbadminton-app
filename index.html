@@ -493,21 +493,23 @@
   <script>
     const STORAGE_KEY = 'badminton_profit_tracker_v1';
     
-    // 預設資料狀態
-    let state = {
-      theme: 'lime',
-      isDarkMode: true, // 預設深色模式
-      availableTimeSlots: ['18-20', '19-21', '20-22', '21-23'], // 動態管理的時段選項
-      shuttlecocks: [
-        { id: 'shuttle-1', name: 'Yonex AS-50', price: 840 },
-        { id: 'shuttle-2', name: 'RSL No.4', price: 660 }
-      ],
-      records: {},
-      currentDate: '',
-      currentYear: 2026,
-      currentMonth: 6, 
-      activeTab: 'calendar'
-    };
+// 替換原本的 state 定義
+let state = {
+  theme: 'lime',
+  isDarkMode: true,
+  availableTimeSlots: ['18-20', '19-21', '20-22', '21-23'],
+  // --- 新增模板資料 ---
+  templates: [
+    { name: '早安團', time: '08-10', court: 600 },
+    { name: '晚間 3 面', time: '19-22', court: 1500 }
+  ],
+  // 將 records 改為支援多場次 (每個日期下是一個陣列)
+  records: {}, 
+  currentDate: '',
+  currentYear: 2026,
+  currentMonth: 6,
+  activeTab: 'calendar'
+};
 
     let isEditingTimeSlots = false; // 控制時段是否處於編輯模式
 
