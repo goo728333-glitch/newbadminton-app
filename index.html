@@ -41,7 +41,7 @@
     }
   </script>
 
-  <!-- -->
+  <!-- 核心 CSS 與 UI 質感微調 -->
   <style>
     :root {
       --color-primary: 132 204 22; /* 活力螢光綠 (Default) */
@@ -75,16 +75,17 @@
       --color-glow: rgba(234, 179, 8, 0.12);
     }
 
+    /* 鎖死身體回彈，完美模擬原生 APP 框架 */
     html, body {
-      overscroll-behavior-y: contain; /* 禁用彈性下拉，避免網頁整體飄移 */
+      overscroll-behavior: none;
       height: 100%;
       margin: 0;
       padding: 0;
+      overflow: hidden;
     }
 
     body {
-      background-attachment: fixed;
-      transition: background-image 0.5s ease, background-color 0.5s ease, color 0.3s ease;
+      transition: background-color 0.5s ease, color 0.3s ease;
     }
 
     /* 淺色模式背景 */
@@ -130,7 +131,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* 抽屜視窗特效 */
+    /* 抽屜視窗與模態視窗動畫 */
     .drawer-up {
       animation: drawerUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
@@ -140,14 +141,13 @@
     }
   </style>
 </head>
-<body class="text-slate-800 dark:text-slate-100 min-h-screen font-sans antialiased custom-scrollbar theme-lime">
+<body class="text-slate-800 dark:text-slate-100 min-h-screen font-sans antialiased theme-lime">
 
-  <!-- -->
-  <!-- 主容器：限制最大寬度以達到手機 app 精緻美感，增加底部 Safe Area 保護距 -->
-  <div class="max-w-md mx-auto min-h-screen flex flex-col bg-slate-50/90 dark:bg-slate-950/85 border-x border-slate-200 dark:border-slate-900 shadow-2xl relative" style="padding-bottom: calc(6.5rem + env(safe-area-inset-bottom));">
+  <!-- 主容器：限制最大寬度以達到手機 app 精緻美感，高度固定並禁止主體溢出 -->
+  <div class="max-w-md mx-auto h-screen flex flex-col bg-slate-50/90 dark:bg-slate-950/85 border-x border-slate-200 dark:border-slate-900 shadow-2xl relative overflow-hidden">
     
-    <!-- 頂部標題列：使用安全區域動態內邊距 (Safe Area Padding-Top)，自動避開 iPhone 瀏海與動態島 -->
-    <header class="p-5 border-b border-slate-200 dark:border-slate-900 flex justify-between items-center sticky top-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md z-40" style="padding-top: calc(1.25rem + env(safe-area-inset-top));">
+    <!-- 頂部標題列：使用安全區域動態內邊距 (Safe Area Padding-Top) -->
+    <header class="p-5 border-b border-slate-200 dark:border-slate-900 flex justify-between items-center bg-white/95 dark:bg-slate-950/95 backdrop-blur-md z-40 shrink-0" style="padding-top: calc(1.25rem + env(safe-area-inset-top));">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-2xl bg-theme flex items-center justify-center shadow-lg transition-all duration-500">
           <i data-lucide="activity" class="w-5 h-5 text-slate-950 stroke-[2.5]"></i>
@@ -166,9 +166,8 @@
       </button>
     </header>
 
-    <!-- -->
-    <!-- KPI 數據快速預覽卡片 -->
-    <section class="px-5 pt-4 grid grid-cols-3 gap-3">
+    <!-- KPI 數據快速預覽卡片 (靜態不可滾動) -->
+    <section class="px-5 pt-4 grid grid-cols-3 gap-3 shrink-0">
       <div class="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-2xl p-3 text-center shadow-sm dark:shadow-none">
         <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold mb-1">累積淨利潤</p>
         <p id="kpi-profit" class="text-sm font-black text-theme transition-colors duration-500">NT$ 0</p>
@@ -183,10 +182,9 @@
       </div>
     </section>
 
-    <!-- 主顯示區域 -->
-    <main class="flex-1 p-5 overflow-y-auto">
+    <!-- 主顯示區域：這裏是唯一可以上下滑動的地方，底部預留高度防止被固定導覽列遮擋 -->
+    <main class="flex-1 p-5 overflow-y-auto custom-scrollbar pb-36">
       
-      <!-- -->
       <!-- TAB 1: 羽球日曆主頁 -->
       <div id="tab-calendar" class="tab-content space-y-6 fade-in">
         <!-- 日曆控制器 -->
@@ -212,7 +210,7 @@
           </div>
         </div>
 
-        <!-- 當日開團記帳詳情區 (全面進化：支援多時段場次) -->
+        <!-- 當日開團記帳詳情區 (支援多時段場次) -->
         <div class="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-3xl p-5 space-y-4 relative shadow-sm">
           <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-900 pb-3">
             <div class="flex items-center gap-2">
@@ -240,10 +238,22 @@
             </div>
           </div>
 
-          <!-- -->
           <!-- 記帳表單 inputs (連動目前選定的場次/時段) -->
           <div id="session-editor-form" class="space-y-4 hidden pt-2 border-t border-slate-100 dark:border-slate-900/60">
             
+            <!-- 常用模板快捷套用列 -->
+            <div class="space-y-1.5 bg-slate-50/50 dark:bg-slate-950/30 p-3 rounded-2xl border border-slate-100 dark:border-slate-900">
+              <div class="flex justify-between items-center">
+                <label class="text-[10px] font-black tracking-wider text-slate-400 dark:text-slate-500 uppercase">⚡ 常用設定快速套用</label>
+                <button onclick="openSaveTemplateModal()" class="text-[10px] text-theme font-black hover:underline flex items-center gap-1">
+                  <i data-lucide="plus-square" class="w-3 h-3"></i> 儲存目前設定為模板
+                </button>
+              </div>
+              <div id="templates-quick-container" class="flex gap-2 overflow-x-auto pb-1 pt-1 custom-scrollbar">
+                <!-- 模板藥丸按鈕動態加載 -->
+              </div>
+            </div>
+
             <!-- 時段與場地數量 -->
             <div class="grid grid-cols-2 gap-3">
               <div class="space-y-1.5">
@@ -328,7 +338,6 @@
         </div>
       </div>
 
-      <!-- -->
       <!-- TAB 2: 開團歷史清單 -->
       <div id="tab-history" class="tab-content space-y-4 hidden fade-in">
         <div class="flex justify-between items-center">
@@ -392,7 +401,6 @@
         </div>
       </div>
 
-      <!-- -->
       <!-- TAB 4: 數據分析看板 -->
       <div id="tab-dashboard" class="tab-content space-y-6 hidden fade-in">
         <div>
@@ -438,8 +446,8 @@
 
     </main>
 
-    <!-- 底部導航導覽列：適配 iOS Bottom Safe Area (避開底部滑動橫條) -->
-    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white/95 dark:bg-slate-950/90 border-t border-slate-200 dark:border-slate-900 backdrop-blur-md flex justify-around items-center px-4 z-40" style="height: calc(5rem + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);">
+    <!-- 底部導航導覽列：實心不透明防穿透，高度適配 iOS Bottom Safe Area -->
+    <nav class="absolute bottom-0 left-0 w-full bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-900 flex justify-around items-center px-4 z-40 shrink-0 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] dark:shadow-none" style="height: calc(5rem + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);">
       <button id="nav-calendar" onclick="changeTab('calendar')" class="flex flex-col items-center gap-1.5 text-theme transition">
         <i data-lucide="calendar" class="w-5 h-5"></i>
         <span class="text-[10px] font-black">羽球日曆</span>
@@ -460,10 +468,9 @@
 
   </div>
 
-  <!-- -->
   <!-- 設定與自訂主題彈窗 -->
   <div id="settings-modal" class="fixed inset-0 bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 hidden transition-all duration-300">
-    <div class="bg-white dark:bg-slate-900/98 border-t sm:border border-slate-200 dark:border-slate-800 rounded-t-[32px] sm:rounded-[32px] w-full max-w-md p-6 text-center space-y-6 shadow-2xl drawer-up sm:scale-100 relative" style="padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));">
+    <div class="bg-white dark:bg-slate-900/98 border-t sm:border border-slate-200 dark:border-slate-800 rounded-t-[32px] sm:rounded-[32px] w-full max-w-md p-6 text-center space-y-5 shadow-2xl drawer-up sm:scale-100 relative max-h-[90vh] overflow-y-auto custom-scrollbar" style="padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));">
       <div class="w-12 h-1 bg-slate-200 dark:bg-slate-800 rounded-full mx-auto -mt-2 mb-3 sm:hidden"></div>
       <button onclick="toggleSettingsModal(false)" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:hover:text-white p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
         <i data-lucide="x" class="w-5 h-5"></i>
@@ -473,10 +480,10 @@
       </div>
       <div class="space-y-1">
         <h4 class="text-base font-black text-slate-900 dark:text-white">自訂您的羽球 App</h4>
-        <p class="text-[11px] text-slate-500 dark:text-slate-400">個性化外觀配色與獨立打包運行狀態</p>
+        <p class="text-[11px] text-slate-500 dark:text-slate-400">個性化外觀、獨立運行與資料安全備份</p>
       </div>
 
-      <!-- 顯示模式切換 (New Feature!) -->
+      <!-- 顯示模式切換 -->
       <div class="space-y-3 border-t border-slate-150 dark:border-slate-850/60 pt-4 text-left">
         <label class="text-xs font-black text-slate-700 dark:text-slate-300 block">🌓 顯示模式切換：</label>
         <div class="grid grid-cols-2 gap-3 pt-1">
@@ -501,6 +508,37 @@
         </div>
       </div>
 
+      <!-- 新增：資料備份與還原功能 -->
+      <div class="space-y-3 border-t border-slate-150 dark:border-slate-850/60 pt-4 text-left">
+        <label class="text-xs font-black text-slate-700 dark:text-slate-300 block flex items-center gap-1">
+          <i data-lucide="database" class="w-4 h-4 text-theme"></i> 💾 資料備份與還原
+        </label>
+        <div class="grid grid-cols-2 gap-3 pt-1">
+          <button onclick="exportData()" class="flex items-center justify-center gap-2 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl font-black text-xs text-slate-700 dark:text-slate-300 hover:border-theme/30 hover:text-theme transition">
+            <i data-lucide="download" class="w-4 h-4"></i> 匯出備份檔案
+          </button>
+          <button onclick="triggerImport()" class="flex items-center justify-center gap-2 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl font-black text-xs text-slate-700 dark:text-slate-300 hover:border-theme/30 hover:text-theme transition">
+            <i data-lucide="upload" class="w-4 h-4"></i> 匯入備份檔案
+          </button>
+        </div>
+        <input type="file" id="import-file-input" class="hidden" accept=".json" onchange="importData(event)">
+        
+        <!-- 手機檔案限制的文字代碼備份替代 -->
+        <details class="text-[10px] text-slate-400 dark:text-slate-500 cursor-pointer">
+          <summary class="hover:text-slate-600 dark:hover:text-slate-300 transition font-bold mt-1">iOS/手機檔案匯出不順？改用「文字備份碼」</summary>
+          <div class="mt-2 space-y-2 bg-slate-50 dark:bg-slate-950 p-3 rounded-2xl border border-slate-200 dark:border-slate-900">
+            <p>複製後可貼在 LINE 記事本或手機備忘錄備份：</p>
+            <button onclick="copyBackupText()" class="w-full py-2 bg-theme bg-theme-hover text-slate-950 rounded-xl font-black text-xs transition">
+              一鍵複製備份文字碼
+            </button>
+            <textarea id="import-text-area" placeholder="在此貼上備份文字碼進行還原..." class="w-full h-16 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-xl p-2 text-[10px] focus:outline-none focus:border-theme"></textarea>
+            <button onclick="importFromText()" class="w-full py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl font-black text-xs transition">
+              貼上並一鍵還原資料
+            </button>
+          </div>
+        </details>
+      </div>
+
       <div class="space-y-2.5 border-t border-slate-150 dark:border-slate-850/60 pt-4 text-left">
         <label class="text-xs font-black text-slate-700 dark:text-slate-300 block flex items-center gap-1">
           <i data-lucide="shield-check" class="w-4 h-4 text-theme"></i> 獨立運作防護狀態
@@ -515,18 +553,36 @@
     </div>
   </div>
 
-  <!-- 自訂提示視窗 -->
+  <!-- 新增常用模板彈窗 -->
+  <div id="template-modal" class="fixed inset-0 bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-6 hidden">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-3xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl">
+      <div class="w-12 h-12 bg-theme/20 text-theme rounded-full flex items-center justify-center mx-auto">
+        <i data-lucide="bookmark" class="w-6 h-6"></i>
+      </div>
+      <div class="space-y-1.5 text-left">
+        <h4 class="text-sm font-black text-slate-900 dark:text-white">儲存為常用模板</h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">請輸入此開團設定的識別名稱：</p>
+      </div>
+      <input type="text" id="input-template-name" placeholder="例如：週二晚兩面 AS50" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-2xl py-2.5 px-3.5 text-xs font-bold text-slate-900 dark:text-slate-100 focus:outline-none border-theme-focus transition-all">
+      <div class="flex gap-2">
+        <button onclick="saveTemplate()" class="flex-1 bg-theme text-slate-950 font-black text-xs py-2.5 rounded-2xl hover:bg-theme/90 transition">確認儲存</button>
+        <button onclick="closeTemplateModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs py-2.5 rounded-2xl transition">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 自訂確認提示視窗 -->
   <div id="confirm-modal" class="fixed inset-0 bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-6 hidden">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-3xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl">
       <div class="w-12 h-12 bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-500/20 text-red-500 dark:text-red-400 rounded-full flex items-center justify-center mx-auto">
         <i data-lucide="alert-triangle" class="w-6 h-6"></i>
       </div>
       <div class="space-y-1.5">
-        <h4 class="text-sm font-black text-slate-900 dark:text-white">確認刪除嗎？</h4>
-        <p id="confirm-modal-text" class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">此動作將無法還原，確定要永久刪除這筆開團資料嗎？</p>
+        <h4 class="text-sm font-black text-slate-900 dark:text-white">確認執行嗎？</h4>
+        <p id="confirm-modal-text" class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">此動作將無法還原，確定要執行嗎？</p>
       </div>
       <div class="flex gap-2">
-        <button id="confirm-btn-yes" class="flex-1 bg-red-500 text-slate-950 font-black text-xs py-2.5 rounded-2xl hover:bg-red-400 transition">確認刪除</button>
+        <button id="confirm-btn-yes" class="flex-1 bg-red-500 text-slate-950 font-black text-xs py-2.5 rounded-2xl hover:bg-red-400 transition">確認執行</button>
         <button id="confirm-btn-no" onclick="closeConfirmModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs py-2.5 rounded-2xl transition">取消</button>
       </div>
     </div>
@@ -540,7 +596,6 @@
     <span id="toast-text" class="text-xs font-bold text-slate-800 dark:text-slate-100">成功更新資料</span>
   </div>
 
-  <!-- -->
   <!-- JS 邏輯區塊 -->
   <script>
     const STORAGE_KEY = 'badminton_profit_tracker_v3';
@@ -553,6 +608,20 @@
         { id: 'shuttle-1', name: 'Yonex AS-50', price: 840 },
         { id: 'shuttle-2', name: 'RSL No.4', price: 660 }
       ],
+      templates: [
+        {
+          id: 'tmpl-default-1',
+          name: '例行雙面 AS-50 團',
+          timeSlot: '14:00 - 16:00',
+          courts: 2,
+          courtFee: 1000,
+          shuttlecockId: 'shuttle-1',
+          ballsUsed: 6,
+          fees: [
+            { price: 200, count: 0 }
+          ]
+        }
+      ],
       records: {
         '2026-07-14': {
           sessions: [
@@ -564,8 +633,7 @@
               shuttlecockId: 'shuttle-1',
               ballsUsed: 6,
               fees: [
-                { price: 200, count: 0 },
-                { price: 140, count: 0 }
+                { price: 200, count: 0 }
               ]
             }
           ]
@@ -621,7 +689,7 @@
       }
     }
 
-    // --- 數據結構向後相容性升級遷移 ---
+    // --- 數據結構向後相容性與模板升級遷移 ---
     function loadState() {
       const saved = SafeStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -649,6 +717,12 @@
                 }
               }
             }
+            
+            // 升級相容缺乏 templates 物件的舊版
+            if (!parsed.templates) {
+              parsed.templates = state.templates;
+            }
+
             state = { ...state, ...parsed };
           }
         } catch (e) {
@@ -664,7 +738,7 @@
         changeThemeColor(state.theme, false);
       }
       
-      // 初始化深淺色主題 (New Feature!)
+      // 初始化深淺色主題
       if (state.themeMode) {
         toggleAppMode(state.themeMode, false);
       } else {
@@ -691,11 +765,12 @@
       renderSessionDetail();
       renderShuttlecocks();
       renderHistoryList();
+      renderTemplates();
       updateKpis();
       
       if (SafeStorage.isSandboxBlocked) {
         setTimeout(() => {
-          showToast('⚠️ 瀏覽器沙盒限制存取，打包成獨立手機 App 即可離線永久存檔！', false);
+          showToast('⚠️ 瀏覽器沙盒限制存取，打包或部署成網頁即可離線永久存檔！', false);
         }, 2000);
       }
       
@@ -729,7 +804,7 @@
       lucide.createIcons();
     }
 
-    // --- 深淺色顯示模式切換邏輯 (New Feature!) ---
+    // --- 深淺色顯示模式切換邏輯 ---
     window.toggleAppMode = function(mode, shouldSave = true) {
       state.themeMode = mode;
       const htmlEl = document.documentElement;
@@ -817,7 +892,7 @@
         if (isSelected) {
           cell.className = `min-h-[56px] flex flex-col justify-between items-center py-1.5 rounded-2xl cursor-pointer transition-all border bg-theme text-slate-950 border-theme shadow-lg scale-105 font-black`;
         } else {
-          cell.className = `min-h-[56px] flex flex-col justify-between items-center py-1.5 rounded-2xl cursor-pointer transition-all border bg-slate-50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 border-slate-100 dark:border-transparent hover:border-slate-200 dark:hover:border-slate-800 shadow-sm dark:shadow-none`;
+          cell.className = `min-h-[56px] flex flex-col justify-between items-center py-1.5 rounded-2xl cursor-pointer transition-all border bg-slate-100 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 border-slate-200/40 dark:border-transparent hover:border-slate-300 dark:hover:border-slate-800 shadow-sm dark:shadow-none`;
         }
         
         cell.onclick = () => selectDate(dateStr);
@@ -941,7 +1016,7 @@
       }
     }
 
-    //    // 渲染橫向滑動時段卡片
+    // 渲染橫向滑動時段卡片
     function renderSessionsTabs(sessions) {
       const container = document.getElementById('sessions-tabs-container');
       container.innerHTML = '';
@@ -956,7 +1031,7 @@
         if (isActive) {
           card.className = `flex-shrink-0 bg-theme text-slate-950 px-4 py-2.5 rounded-2xl flex flex-col items-start min-w-[120px] shadow-lg border border-theme transform scale-102 transition-all text-left`;
         } else {
-          card.className = `flex-shrink-0 bg-slate-50 dark:bg-slate-950/60 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-900 px-4 py-2.5 rounded-2xl flex flex-col items-start min-w-[120px] hover:border-slate-300 dark:hover:border-slate-800 shadow-sm dark:shadow-none transition-all text-left`;
+          card.className = `flex-shrink-0 bg-white dark:bg-slate-950/60 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-900 px-4 py-2.5 rounded-2xl flex flex-col items-start min-w-[120px] hover:border-slate-300 dark:hover:border-slate-800 shadow-sm dark:shadow-none transition-all text-left`;
         }
 
         card.innerHTML = `
@@ -1075,7 +1150,7 @@
       });
     }
 
-    // 即時同步時段、場地欄位數據到記憶體，實現即時「暫存功能」
+    // 即時同步時段、場地欄位數據到記憶體
     window.updateActiveSessionMeta = function() {
       const dateStr = state.currentDate;
       const record = state.records[dateStr];
@@ -1197,6 +1272,232 @@
       showToast('今日所有開團時段與場次資料，已安全保存至本機！', true);
     }
 
+    // --- 常用模板系統邏輯 ---
+    function renderTemplates() {
+      const container = document.getElementById('templates-quick-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (state.templates.length === 0) {
+        container.innerHTML = `<span class="text-[10px] text-slate-400 dark:text-slate-500 py-1 px-2">尚未建立任何常用模板</span>`;
+        return;
+      }
+
+      state.templates.forEach(t => {
+        const pill = document.createElement('div');
+        pill.className = 'flex-shrink-0 flex items-center bg-slate-100 dark:bg-slate-900 rounded-full pl-3 pr-2 py-1 gap-1 border border-slate-200 dark:border-slate-800 shadow-sm transition hover:border-theme/30';
+        pill.innerHTML = `
+          <button onclick="applyTemplate('${t.id}')" class="text-[10px] font-black text-slate-700 dark:text-slate-300 hover:text-theme transition pr-1">
+            ${t.name}
+          </button>
+          <button onclick="deleteTemplate('${t.id}', event)" class="p-0.5 text-slate-400 hover:text-red-500 hover:bg-slate-200 dark:hover:bg-slate-850 rounded-full transition" title="刪除模板">
+            <i data-lucide="x" class="w-3 h-3"></i>
+          </button>
+        `;
+        container.appendChild(pill);
+      });
+      lucide.createIcons();
+    }
+
+    window.openSaveTemplateModal = function() {
+      document.getElementById('input-template-name').value = '';
+      document.getElementById('template-modal').classList.remove('hidden');
+    }
+
+    window.closeTemplateModal = function() {
+      document.getElementById('template-modal').classList.add('hidden');
+    }
+
+    window.saveTemplate = function() {
+      const name = document.getElementById('input-template-name').value.trim();
+      if (!name) {
+        showToast('❌ 請輸入模板名稱', false);
+        return;
+      }
+
+      // 抓取當前表單內的即時數據
+      const timeSlot = document.getElementById('input-time-slot').value || '14:00 - 16:00';
+      const courts = Number(document.getElementById('input-courts-count').value) || 1;
+      const courtFee = Number(document.getElementById('input-court-fee').value) || 0;
+      const shuttlecockId = document.getElementById('select-shuttlecock').value || state.shuttlecocks[0].id;
+      const ballsUsed = Number(document.getElementById('input-balls-used').value) || 0;
+
+      let fees = [];
+      const rows = document.getElementById('fee-rows-container').children;
+      for (let row of rows) {
+        const inputs = row.querySelectorAll('input');
+        if (inputs.length >= 2) {
+          fees.push({
+            price: Number(inputs[0].value) || 0,
+            count: Number(inputs[1].value) || 0
+          });
+        }
+      }
+
+      const newTmpl = {
+        id: 'tmpl-' + Date.now(),
+        name,
+        timeSlot,
+        courts,
+        courtFee,
+        shuttlecockId,
+        ballsUsed,
+        fees
+      };
+
+      if (!state.templates) {
+        state.templates = [];
+      }
+      state.templates.push(newTmpl);
+      
+      saveState();
+      renderTemplates();
+      closeTemplateModal();
+      showToast('🎉 已成功儲存為常用模板！', true);
+    }
+
+    window.applyTemplate = function(templateId) {
+      const tmpl = state.templates.find(t => t.id === templateId);
+      if (!tmpl) return;
+
+      // 套用至當前編輯表單中
+      document.getElementById('input-time-slot').value = tmpl.timeSlot;
+      document.getElementById('input-courts-count').value = tmpl.courts;
+      document.getElementById('input-court-fee').value = tmpl.courtFee;
+      document.getElementById('select-shuttlecock').value = tmpl.shuttlecockId;
+      document.getElementById('input-balls-used').value = tmpl.ballsUsed;
+
+      // 複製一份陣列，避免物件參照衝突
+      const clonedFees = JSON.parse(JSON.stringify(tmpl.fees));
+      renderFeeRows(clonedFees);
+      
+      // 更新背景 state 暫存
+      const record = state.records[state.currentDate];
+      if (record && record.sessions) {
+        const activeSess = record.sessions.find(s => s.id === state.currentSessionId);
+        if (activeSess) {
+          activeSess.timeSlot = tmpl.timeSlot;
+          activeSess.courts = tmpl.courts;
+          activeSess.courtFee = tmpl.courtFee;
+          activeSess.shuttlecockId = tmpl.shuttlecockId;
+          activeSess.ballsUsed = tmpl.ballsUsed;
+          activeSess.fees = clonedFees;
+        }
+      }
+
+      calculateLiveProfit();
+      
+      // 重新渲染時段切換條
+      if (record && record.sessions) {
+        renderSessionsTabs(record.sessions);
+      }
+
+      showToast(`⚡ 已套用「${tmpl.name}」模板設定！`, true);
+    }
+
+    window.deleteTemplate = function(templateId, event) {
+      if (event) event.stopPropagation(); // 阻止氣泡觸發套用事件
+
+      showCustomConfirm('確定要永久刪除此常用設定模板嗎？', () => {
+        state.templates = state.templates.filter(t => t.id !== templateId);
+        saveState();
+        renderTemplates();
+        showToast('常用模板已刪除', true);
+      });
+    }
+
+    // --- 資料匯出與匯入 (備份系統) ---
+    window.exportData = function() {
+      try {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        
+        const timestamp = new Date().toISOString().slice(0,10).replace(/-/g,"");
+        downloadAnchor.setAttribute("download", `badminton_backup_${timestamp}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+        showToast('💾 備份檔案下載成功！', true);
+      } catch (err) {
+        console.error("備份下載失敗", err);
+        showToast('❌ 下載失敗，請改用下方複製備份文字碼！', false);
+      }
+    }
+
+    window.triggerImport = function() {
+      document.getElementById('import-file-input').click();
+    }
+
+    window.importData = function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed && typeof parsed === 'object' && parsed.records && parsed.shuttlecocks) {
+            state = parsed;
+            saveState();
+            showToast('🎉 資料備份已完美還原！網頁即將重整...', true);
+            setTimeout(() => {
+              window.location.reload();
+            }, 1500);
+          } else {
+            showToast('❌ 無效的備份檔案格式！', false);
+          }
+        } catch (err) {
+          console.error("匯入解析錯誤", err);
+          showToast('❌ 檔案解析失敗！', false);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    window.copyBackupText = function() {
+      try {
+        const text = JSON.stringify(state);
+        const tempInput = document.createElement("textarea");
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        showToast('📋 備份代碼已成功複製！', true);
+      } catch (err) {
+        console.error("複製文字碼失敗", err);
+        showToast('❌ 複製失敗，請手動複製！', false);
+      }
+    }
+
+    window.importFromText = function() {
+      const area = document.getElementById('import-text-area');
+      const text = area.value.trim();
+      if (!text) {
+        showToast('❌ 請先貼上備份文字碼', false);
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(text);
+        if (parsed && typeof parsed === 'object' && parsed.records && parsed.shuttlecocks) {
+          state = parsed;
+          saveState();
+          showToast('🎉 資料已成功貼上還原！網頁即將重整...', true);
+          area.value = '';
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        } else {
+          showToast('❌ 備份代碼格式錯誤！', false);
+        }
+      } catch (err) {
+        console.error("解析代碼失敗", err);
+        showToast('❌ 解析失敗，請確認代碼是否完整！', false);
+      }
+    }
+
     // --- 球種管理模塊 ---
     function renderShuttlecocks() {
       const container = document.getElementById('shuttlecocks-list-container');
@@ -1215,10 +1516,10 @@
             </p>
           </div>
           <div class="flex items-center gap-1">
-            <button onclick="editShuttlecock('${s.id}')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition">
+            <button onclick="editShuttlecock('${s.id}')" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition" title="編輯球種">
               <i data-lucide="edit" class="w-4 h-4"></i>
             </button>
-            <button onclick="deleteShuttlecock('${s.id}')" class="p-2 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 transition">
+            <button onclick="deleteShuttlecock('${s.id}')" class="p-2 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 transition" title="刪除球種">
               <i data-lucide="trash-2" class="w-4 h-4"></i>
             </button>
           </div>
@@ -1295,7 +1596,7 @@
       });
     }
 
-    //    // --- 開團歷史紀錄 ---
+    // --- 開團歷史紀錄 ---
     function renderHistoryList() {
       const listContainer = document.getElementById('history-list-container');
       listContainer.innerHTML = '';
@@ -1542,20 +1843,3 @@
   </script>
 </body>
 </html>
-```
-eof
-
----
-
-### 💡 淺色模式部署與同步說明：
-1. **GitHub 同步更新**：
-   * 進入你的 GitHub 倉庫 `badminton`。
-   * 點選 **`index.html`**，點選右上角 **「✏️ (編輯)」**。
-   * 全選刪除裡面的舊內容，然後把上面**整份最新的完整代碼**貼上，儲存提交（Commit changes）。
-2. **手機重新整理**：
-   * 在 iPhone 上，將阿杜羽球記帳 App **往上滑動完全關閉背景（Kill app）**，重新點開！
-3. **體驗全新亮色模式**：
-   * 點擊右上角 **⚙️ 齒輪按鈕**。
-   * 點選 **「☀️ 活力淺色風」**，背景立刻切換成高質感的水泥白與運動灰，搭配綠/藍/紅/紫/金的主題色彩，不論在多明亮的光線底下都超級好辨識！
-
-趕快去你的 GitHub 上儲存更新，體驗這款在白天下操作依然超級帥氣、超有質感的雙模羽球記帳 App 吧！
