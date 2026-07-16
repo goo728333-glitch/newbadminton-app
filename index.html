@@ -130,6 +130,30 @@
       from { transform: translateY(100%); }
       to { transform: translateY(0); }
     }
+    // 新增這段函式，用來處理模板渲染與套用
+function renderTemplates() {
+  const container = document.createElement('div');
+  container.className = 'flex flex-wrap gap-2 mb-4';
+  container.id = 'template-buttons';
+  
+  state.templates.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'bg-slate-100 dark:bg-slate-800 text-[10px] font-bold px-3 py-1.5 rounded-full hover:bg-theme transition';
+    btn.innerText = t.name;
+    btn.onclick = () => {
+      document.getElementById('input-court-fee').value = t.court;
+      document.getElementById('input-time-temp') ? document.getElementById('input-time-temp').value = t.time : null;
+      // 這裡您可以根據需要綁定對應的時間輸入框
+      calculateLiveProfit();
+      showToast('已套用模板：' + t.name, true);
+    };
+    container.appendChild(btn);
+  });
+  
+  // 插入到表單上方 (您可以根據 HTML 結構調整插入位置)
+  const form = document.querySelector('.space-y-4');
+  form.prepend(container);
+}
   </style>
 </head>
 <body class="text-slate-800 dark:text-slate-100 min-h-screen font-sans antialiased custom-scrollbar theme-lime">
