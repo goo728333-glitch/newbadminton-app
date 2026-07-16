@@ -3,1255 +3,134 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>阿杜羽球記帳 Standalone App</title>
-  
-  <!-- 離線獨立 App 封裝標籤 (確保打包成 APK/IPA 時能滿版運行，隱藏網址列) -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="阿杜羽球">
-  <meta name="mobile-web-app-capable" content="yes">
-  
-  <!-- 載入外部精美字體與 Tailwind CSS 庫 -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Noto+Sans+TC:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <title>阿杜羽球記帳專業版</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- 載入輕量級精美圖標庫 Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Tailwind 專屬配色配置 -->
   <script>
     tailwind.config = {
       darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
-          },
-          colors: {
-            slate: {
-              850: '#1e293b',
-              900: '#0f172a',
-              950: '#020617',
-            }
-          }
-        }
-      }
+      theme: { extend: { colors: { theme: { DEFAULT: '#84cc16', dark: '#65a30d' } } } }
     }
   </script>
-
-  <!-- CSS 變數控制：自訂 5 種極致運動科技感主題 -->
   <style>
-    :root {
-      --color-primary: 132 204 22; /* 活力螢光綠 (Default) */
-      --color-primary-dark: 101 163 13;
-      --color-glow: rgba(132, 204, 22, 0.12);
-    }
-    
-    .theme-lime {
-      --color-primary: 132 204 22;
-      --color-primary-dark: 101 163 13;
-      --color-glow: rgba(132, 204, 22, 0.12);
-    }
-    .theme-blue {
-      --color-primary: 59 130 246; /* 科技深邃藍 */
-      --color-primary-dark: 37 99 235;
-      --color-glow: rgba(59, 130, 246, 0.12);
-    }
-    .theme-red {
-      --color-primary: 239 68 68; /* 熱血火焰紅 */
-      --color-primary-dark: 220 38 38;
-      --color-glow: rgba(239, 68, 68, 0.12);
-    }
-    .theme-purple {
-      --color-primary: 168 85 247; /* 神秘極光紫 */
-      --color-primary-dark: 147 51 234;
-      --color-glow: rgba(168, 85, 247, 0.12);
-    }
-    .theme-gold {
-      --color-primary: 234 179 8; /* 皇家閃耀金 */
-      --color-primary-dark: 202 138 4;
-      --color-glow: rgba(234, 179, 8, 0.12);
-    }
-
-    html, body {
-      overscroll-behavior-y: contain; /* 禁用彈性下拉，避免網頁整體飄移 */
-      height: 100%;
-      background-color: #020617;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-image: 
-        radial-gradient(at 0% 0%, var(--color-glow) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, var(--color-glow) 0px, transparent 50%);
-      background-attachment: fixed;
-      transition: background-image 0.5s ease;
-    }
-    
-    /* 快捷套用色彩變數 */
-    .bg-theme { background-color: rgb(var(--color-primary)); }
-    .bg-theme-hover:hover { background-color: rgb(var(--color-primary-dark)); }
-    .text-theme { color: rgb(var(--color-primary)); }
-    .border-theme { border-color: rgb(var(--color-primary) / 0.2); }
-    .border-theme-focus:focus { border-color: rgb(var(--color-primary) / 0.5); }
-    .shadow-theme-sm { shadow-color: rgb(var(--color-primary) / 0.15); }
-
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #334155;
-      border-radius: 9999px;
-    }
-    .fade-in {
-      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* 抽屜視窗特效 */
-    .drawer-up {
-      animation: drawerUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    @keyframes drawerUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
+    body { transition: background-color 0.3s, color 0.3s; }
+    .dark body { background-color: #020617; color: #f1f5f9; }
+    body { background-color: #f8fafc; color: #0f172a; }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
   </style>
 </head>
-<body class="text-slate-100 min-h-screen font-sans antialiased custom-scrollbar theme-lime">
-
-  <!-- 主容器：限制最大寬度以達到手機 app 精緻美感，增加底部 Safe Area 保護距 -->
-  <div class="max-w-md mx-auto min-h-screen flex flex-col bg-slate-950/85 border-x border-slate-900 shadow-2xl relative" style="padding-bottom: calc(6.5rem + env(safe-area-inset-bottom));">
+<body class="min-h-screen">
+  <div class="max-w-md mx-auto min-h-screen flex flex-col bg-white dark:bg-slate-950 border-x border-slate-200 dark:border-slate-900 shadow-2xl relative" style="padding-bottom: calc(5rem + env(safe-area-inset-bottom));">
     
-    <!-- 頂部標題列：使用安全區域動態內邊距 (Safe Area Padding-Top)，自動避開 iPhone 瀏海與動態島 -->
-    <header class="p-5 border-b border-slate-900 flex justify-between items-center sticky top-0 bg-slate-950/95 backdrop-blur-md z-40" style="padding-top: calc(1.25rem + env(safe-area-inset-top));">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-theme flex items-center justify-center shadow-lg transition-all duration-500">
-          <i data-lucide="activity" class="w-5 h-5 text-slate-950 stroke-[2.5]"></i>
-        </div>
-        <div>
-          <h1 class="text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">阿杜羽球記帳</h1>
-          <p class="text-[10px] text-theme font-bold flex items-center gap-1 transition-colors duration-500" id="sync-status">
-            <span class="w-1.5 h-1.5 bg-theme rounded-full animate-ping"></span>
-            本地獨立儲存
-          </p>
-        </div>
+    <!-- 頂部標題 -->
+    <header class="p-5 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-white/90 dark:bg-slate-950/90 backdrop-blur-md sticky top-0 z-40">
+      <div>
+        <h1 class="text-lg font-black tracking-wider">阿杜羽球記帳</h1>
+        <p class="text-[10px] text-slate-500 font-bold" id="current-date-display">2026-07-16</p>
       </div>
-      <!-- 齒輪自訂主題按鈕 -->
-      <button onclick="toggleSettingsModal(true)" class="p-2.5 hover:bg-slate-900 rounded-xl transition text-slate-400 hover:text-white" title="設定與主題">
-        <i data-lucide="settings" class="w-5 h-5"></i>
-      </button>
+      <button onclick="toggleModal('settings-modal')" class="p-2 bg-slate-100 dark:bg-slate-900 rounded-xl"><i data-lucide="settings" class="w-5 h-5"></i></button>
     </header>
 
-    <!-- KPI 數據快速預覽卡片 -->
-    <section class="px-5 pt-4 grid grid-cols-3 gap-3">
-      <div class="bg-slate-900/40 border border-slate-900 rounded-2xl p-3 text-center">
-        <p class="text-[10px] text-slate-400 font-bold mb-1">累計利潤</p>
-        <p id="kpi-profit" class="text-sm font-black text-theme transition-colors duration-500">NT$ 0</p>
-      </div>
-      <div class="bg-slate-900/40 border border-slate-900 rounded-2xl p-3 text-center">
-        <p class="text-[10px] text-slate-400 font-bold mb-1">場次總數</p>
-        <p id="kpi-count" class="text-sm font-black text-slate-200">0 場</p>
-      </div>
-      <div class="bg-slate-900/40 border border-slate-900 rounded-2xl p-3 text-center">
-        <p class="text-[10px] text-slate-400 font-bold mb-1">消耗用球</p>
-        <p id="kpi-balls" class="text-sm font-black text-slate-200">0 顆</p>
-      </div>
-    </section>
-
-    <!-- 主顯示區域 -->
-    <main class="flex-1 p-5 overflow-y-auto">
-      
-      <!-- TAB 1: 羽球日曆主頁 -->
-      <div id="tab-calendar" class="tab-content space-y-6 fade-in">
-        <!-- 日曆控制器 -->
-        <div class="bg-slate-900/60 border border-slate-850 rounded-3xl p-4 space-y-4">
-          <div class="flex justify-between items-center px-1">
-            <button onclick="prevMonth()" class="p-2 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition">
-              <i data-lucide="chevron-left" class="w-5 h-5"></i>
-            </button>
-            <h2 id="calendar-month-title" class="text-base font-black text-white tracking-widest">2026年 7月</h2>
-            <button onclick="nextMonth()" class="p-2 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition">
-              <i data-lucide="chevron-right" class="w-5 h-5"></i>
-            </button>
-          </div>
-
-          <!-- 星期標題 -->
-          <div class="grid grid-cols-7 text-center text-xs font-bold text-slate-500">
-            <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
-          </div>
-
-          <!-- 日曆網格 -->
-          <div id="calendar-grid" class="grid grid-cols-7 gap-y-3 gap-x-2 text-center text-sm font-medium">
-            <!-- 日曆格動態生成 -->
-          </div>
+    <!-- 主內容區 -->
+    <main class="flex-1 p-5 space-y-6">
+      <!-- 時段選擇 -->
+      <div class="space-y-2">
+        <label class="text-xs font-black text-slate-500 dark:text-slate-400">開團時段</label>
+        <div class="flex gap-2">
+          <button onclick="addTimeSlot('19-21')" class="bg-slate-100 dark:bg-slate-800 text-[10px] px-3 py-1.5 rounded-full font-bold hover:bg-theme">+ 19-21</button>
+          <button onclick="addTimeSlot('21-23')" class="bg-slate-100 dark:bg-slate-800 text-[10px] px-3 py-1.5 rounded-full font-bold hover:bg-theme">+ 21-23</button>
         </div>
-
-        <!-- 當日開團記帳詳情區 -->
-        <div class="bg-slate-900/40 border border-slate-900 rounded-3xl p-5 space-y-4 relative">
-          <div class="flex justify-between items-center border-b border-slate-900 pb-3">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-theme transition-colors duration-500"></span>
-              <h3 id="detail-date-title" class="text-sm font-black tracking-wider text-slate-200">2026-07-14 記帳詳情</h3>
-            </div>
-            <!-- 刪除整筆按鈕 -->
-            <button id="btn-delete-record" onclick="deleteRecord()" class="hidden text-xs text-red-400 hover:text-red-300 font-bold flex items-center gap-1 transition">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> 刪除此紀錄
-            </button>
-          </div>
-
-          <!-- 記帳表單 inputs -->
-          <div class="space-y-4">
-            <!-- 場地費用 -->
-            <div class="space-y-1.5">
-              <label class="text-xs font-black text-slate-400">場地費用 (NT$)</label>
-              <div class="relative">
-                <span class="absolute left-4 top-3 text-slate-500 text-xs font-bold">$</span>
-                <input type="number" id="input-court-fee" oninput="calculateLiveProfit()" placeholder="0" class="w-full bg-slate-950 border border-slate-850 rounded-2xl py-2.5 pl-8 pr-4 text-sm font-bold text-slate-100 focus:outline-none border-theme-focus transition-all">
-              </div>
-            </div>
-
-            <!-- 球種與用球顆數 -->
-            <div class="grid grid-cols-2 gap-3">
-              <div class="space-y-1.5">
-                <label class="text-xs font-black text-slate-400">使用球種</label>
-                <select id="select-shuttlecock" onchange="calculateLiveProfit()" class="w-full bg-slate-950 border border-slate-850 rounded-2xl py-2.5 px-3.5 text-xs font-bold text-slate-100 focus:outline-none border-theme-focus transition-all">
-                  <!-- 動態生成球種下拉 -->
-                </select>
-              </div>
-              <div class="space-y-1.5">
-                <label class="text-xs font-black text-slate-400">消耗顆數</label>
-                <input type="number" id="input-balls-used" oninput="calculateLiveProfit()" placeholder="0" class="w-full bg-slate-950 border border-slate-850 rounded-2xl py-2.5 px-3.5 text-sm font-bold text-slate-100 focus:outline-none border-theme-focus transition-all">
-              </div>
-            </div>
-
-            <!-- 收費明細（多收費級距編輯器，可無限新增收費金額與人數） -->
-            <div class="space-y-2 border-t border-slate-900/60 pt-3">
-              <div class="flex justify-between items-center mb-2">
-                <label class="text-xs font-black text-slate-400">收入明細 (不同收費級距)</label>
-                <button onclick="addFeeRow()" class="text-[10px] bg-slate-900 border border-slate-800 text-theme px-2.5 py-1 rounded-full font-black hover:bg-slate-850 hover:border-theme/20 transition flex items-center gap-1">
-                  <i data-lucide="plus" class="w-3 h-3"></i> 新增收費
-                </button>
-              </div>
-
-              <!-- 收費列表容器 -->
-              <div id="fee-rows-container" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
-                <!-- 每一條收費明細 -->
-              </div>
-            </div>
-
-            <!-- 計算結果即時預覽看板 -->
-            <div class="bg-slate-950 border border-slate-900 rounded-2xl p-4 space-y-2">
-              <div class="flex justify-between text-xs font-bold text-slate-400">
-                <span>本日總收入</span>
-                <span id="live-total-income" class="text-slate-200">NT$ 0</span>
-              </div>
-              <div class="flex justify-between text-xs font-bold text-slate-400">
-                <span>用球總花費</span>
-                <span id="live-ball-cost" class="text-slate-200">NT$ 0</span>
-              </div>
-              <div class="flex justify-between text-xs font-bold text-slate-400 border-b border-slate-900 pb-2">
-                <span>場地費用</span>
-                <span id="live-court-fee" class="text-slate-200">NT$ 0</span>
-              </div>
-              <div class="flex justify-between items-center pt-1">
-                <span class="text-xs font-black text-slate-300">淨利潤 (損益)</span>
-                <span id="live-net-profit" class="text-base font-black text-theme transition-colors">NT$ 0</span>
-              </div>
-            </div>
-
-            <!-- 儲存紀錄按鈕 -->
-            <button onclick="saveRecord()" class="w-full bg-theme bg-theme-hover text-slate-950 py-3 rounded-2xl font-black text-sm shadow-lg hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-              <i data-lucide="save" class="w-4 h-4"></i> 儲存開團資料
-            </button>
-          </div>
-        </div>
+        <div id="time-slots-container" class="flex flex-wrap gap-2 mt-2"></div>
       </div>
 
-      <!-- TAB 2: 開團歷史清單 -->
-      <div id="tab-history" class="tab-content space-y-4 hidden fade-in">
-        <div class="flex justify-between items-center">
-          <div>
-            <h2 class="text-base font-black text-white">開團歷史紀錄</h2>
-            <p class="text-[10px] text-slate-400 font-bold">所有已登記的場次明細與損益</p>
-          </div>
-          <span id="history-count" class="text-xs font-black bg-slate-900 border border-slate-800 text-theme px-3 py-1 rounded-full">共 0 場</span>
-        </div>
-
-        <!-- 歷史紀錄滾動容器 -->
-        <div id="history-list-container" class="space-y-3">
-          <!-- 歷史卡片動態渲染 -->
-        </div>
-      </div>
-
-      <!-- TAB 3: 球種管理 -->
-      <div id="tab-shuttlecocks" class="tab-content space-y-6 hidden fade-in">
+      <!-- 記帳表單 -->
+      <div class="space-y-4">
         <div>
-          <h2 class="text-base font-black text-white">球種管理設定</h2>
-          <p class="text-[10px] text-slate-400 font-bold">新增、編輯目前使用的羽球，系統自動以一筒 12 顆計算單顆成本。</p>
+          <label class="text-xs font-black text-slate-500 dark:text-slate-400">場地費用 (NT$)</label>
+          <input type="number" id="input-court-fee" oninput="calculate()" class="w-full mt-1 bg-slate-100 dark:bg-slate-900 rounded-2xl p-3 font-bold text-sm">
         </div>
-
-        <!-- 新增與修改球種表單 -->
-        <div class="bg-slate-900/40 border border-slate-900 rounded-3xl p-5 space-y-4">
-          <h3 id="shuttle-form-title" class="text-xs font-black text-slate-300 tracking-wider flex items-center gap-1">
-            <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-theme"></i> 新增球種
-          </h3>
-          <input type="hidden" id="input-shuttle-id">
-          <div class="space-y-3">
-            <div class="space-y-1.5">
-              <label class="text-xs font-black text-slate-400">球種名稱</label>
-              <input type="text" id="input-shuttle-name" placeholder="例如：Yonex AS-50, RSL No.4" class="w-full bg-slate-950 border border-slate-850 rounded-2xl py-2.5 px-3.5 text-xs font-bold text-slate-100 focus:outline-none border-theme-focus transition-all">
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div class="space-y-1.5">
-                <label class="text-xs font-black text-slate-400">每筒價格 (NT$)</label>
-                <input type="number" id="input-shuttle-price" oninput="calculateLiveShuttleSingle()" placeholder="0" class="w-full bg-slate-950 border border-slate-850 rounded-2xl py-2.5 px-3.5 text-sm font-bold text-slate-100 focus:outline-none border-theme-focus transition-all">
-              </div>
-              <div class="space-y-1.5">
-                <label class="text-xs font-black text-slate-400">單顆估算價格 (自動/12)</label>
-                <div class="w-full bg-slate-900 border border-slate-900 rounded-2xl py-2.5 px-3.5 text-sm font-black text-theme flex items-center justify-between">
-                  <span>NT$</span>
-                  <span id="live-shuttle-single-price">0</span>
-                </div>
-              </div>
-            </div>
-            <div class="flex gap-2 pt-1">
-              <button onclick="saveShuttlecock()" class="flex-1 bg-theme bg-theme-hover text-slate-950 py-2.5 rounded-2xl font-black text-xs transition">儲存球種</button>
-              <button id="btn-cancel-shuttle-edit" onclick="cancelShuttlecockEdit()" class="hidden flex-1 bg-slate-900 border border-slate-800 text-slate-400 py-2.5 rounded-2xl font-black text-xs hover:bg-slate-850 transition">取消修改</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 球種列表 -->
-        <div class="space-y-3">
-          <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider px-1">現有球種清單</h3>
-          <div id="shuttlecocks-list-container" class="space-y-2">
-            <!-- 球種卡片 -->
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 4: 數據分析看板 -->
-      <div id="tab-dashboard" class="tab-content space-y-6 hidden fade-in">
         <div>
-          <h2 class="text-base font-black text-white">收支數據分析</h2>
-          <p class="text-[10px] text-slate-400 font-bold">開團累積收支、平均場次分析</p>
+          <label class="text-xs font-black text-slate-500 dark:text-slate-400">消耗球數</label>
+          <input type="number" id="input-balls" oninput="calculate()" class="w-full mt-1 bg-slate-100 dark:bg-slate-900 rounded-2xl p-3 font-bold text-sm">
         </div>
-
-        <!-- 詳細統計卡片 -->
-        <div class="bg-slate-900/40 border border-slate-900 rounded-3xl p-5 space-y-4">
-          <div class="grid grid-cols-2 gap-4">
-            <div class="bg-slate-950 border border-slate-900 rounded-2xl p-4">
-              <p class="text-[10px] text-slate-400 font-black">累積總實收</p>
-              <p id="stat-total-income" class="text-base font-black text-slate-100">NT$ 0</p>
-            </div>
-            <div class="bg-slate-950 border border-slate-900 rounded-2xl p-4">
-              <p class="text-[10px] text-slate-400 font-black">累積淨利潤</p>
-              <p id="stat-total-profit" class="text-base font-black text-theme">NT$ 0</p>
-            </div>
-            <div class="bg-slate-950 border border-slate-900 rounded-2xl p-4">
-              <p class="text-[10px] text-slate-400 font-black">場地總花費</p>
-              <p id="stat-total-court" class="text-base font-black text-slate-300">NT$ 0</p>
-            </div>
-            <div class="bg-slate-950 border border-slate-900 rounded-2xl p-4">
-              <p class="text-[10px] text-slate-400 font-black">用球總花費</p>
-              <p id="stat-total-balls-cost" class="text-base font-black text-slate-300">NT$ 0</p>
-            </div>
-          </div>
-
-          <div class="border-t border-slate-900 pt-3 flex justify-between items-center text-xs text-slate-400 font-bold">
-            <span>單場平均收入</span>
-            <span id="stat-avg-income" class="text-slate-200">NT$ 0</span>
-          </div>
-          <div class="flex justify-between items-center text-xs text-slate-400 font-bold">
-            <span>單場 average 利潤</span>
-            <span id="stat-avg-profit" class="text-theme font-black">NT$ 0</span>
-          </div>
+        <div class="bg-lime-50 dark:bg-lime-900/20 p-4 rounded-2xl flex justify-between items-center">
+          <span class="text-sm font-black">預估損益</span>
+          <span id="display-profit" class="text-lg font-black text-lime-600 dark:text-lime-400">NT$ 0</span>
         </div>
+        <button onclick="save()" class="w-full bg-lime-500 text-white py-4 rounded-2xl font-black shadow-lg">儲存開團資料</button>
       </div>
-
     </main>
 
-    <!-- 底部導航導覽列：適配 iOS Bottom Safe Area (避開底部滑動黑條)，並固定寬度置中對齊 -->
-    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-slate-950/90 border-t border-slate-900 backdrop-blur-md flex justify-around items-center px-4 z-40" style="height: calc(5rem + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);">
-      <button id="nav-calendar" onclick="changeTab('calendar')" class="flex flex-col items-center gap-1.5 text-theme transition">
-        <i data-lucide="calendar" class="w-5 h-5"></i>
-        <span class="text-[10px] font-black">羽球日曆</span>
-      </button>
-      <button id="nav-history" onclick="changeTab('history')" class="flex flex-col items-center gap-1.5 text-slate-500 hover:text-slate-200 transition">
-        <i data-lucide="clipboard-list" class="w-5 h-5"></i>
-        <span class="text-[10px] font-black">開團歷史</span>
-      </button>
-      <button id="nav-shuttlecocks" onclick="changeTab('shuttlecocks')" class="flex flex-col items-center gap-1.5 text-slate-500 hover:text-slate-200 transition">
-        <i data-lucide="feather" class="w-5 h-5"></i>
-        <span class="text-[10px] font-black">球種管理</span>
-      </button>
-      <button id="nav-dashboard" onclick="changeTab('dashboard')" class="flex flex-col items-center gap-1.5 text-slate-500 hover:text-slate-200 transition">
-        <i data-lucide="trending-up" class="w-5 h-5"></i>
-        <span class="text-[10px] font-black">數據分析</span>
-      </button>
-    </nav>
-
-  </div>
-
-  <!-- 【⚙️ 自訂主題設定小視窗 (完美優化成原生 Bottom Sheet 抽屜質感)】 -->
-  <div id="settings-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 hidden transition-all duration-300">
-    <div class="bg-slate-900/98 border-t sm:border border-slate-800 rounded-t-[32px] sm:rounded-[32px] w-full max-w-md p-6 text-center space-y-6 shadow-2xl drawer-up sm:scale-100 relative" style="padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));">
-      
-      <!-- 手機端頂部拖曳指示條 -->
-      <div class="w-12 h-1 bg-slate-800 rounded-full mx-auto -mt-2 mb-3 sm:hidden"></div>
-      
-      <!-- 關閉按鈕 -->
-      <button onclick="toggleSettingsModal(false)" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-full hover:bg-slate-800 transition">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
-      
-      <div class="w-12 h-12 bg-slate-950/80 border border-slate-800 text-theme rounded-2xl flex items-center justify-center mx-auto shadow-md">
-        <i data-lucide="sliders" class="w-6 h-6 animate-pulse"></i>
-      </div>
-
-      <div class="space-y-1">
-        <h4 class="text-base font-black text-white">自訂您的羽球 App</h4>
-        <p class="text-[11px] text-slate-400">個性化外觀配色與獨立打包運行狀態</p>
-      </div>
-
-      <!-- 配色選擇區 -->
-      <div class="space-y-3 border-t border-slate-850/60 pt-4">
-        <label class="text-xs font-black text-slate-300 block text-left">🎨 點選更換主題配色：</label>
-        <div class="grid grid-cols-5 gap-2 pt-1">
-          <!-- 綠色 -->
-          <button onclick="changeThemeColor('lime')" class="w-12 h-12 rounded-2xl bg-[#84cc16] border-2 border-white/10 hover:scale-110 active:scale-95 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-lg shadow-lime-500/10" title="螢光綠">🟢</button>
-          <!-- 藍色 -->
-          <button onclick="changeThemeColor('blue')" class="w-12 h-12 rounded-2xl bg-[#3b82f6] border-2 border-white/10 hover:scale-110 active:scale-95 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-lg shadow-blue-500/10" title="科技藍">🔵</button>
-          <!-- 紅色 -->
-          <button onclick="changeThemeColor('red')" class="w-12 h-12 rounded-2xl bg-[#ef4444] border-2 border-white/10 hover:scale-110 active:scale-95 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-lg shadow-red-500/10" title="火焰紅">🔴</button>
-          <!-- 紫色 -->
-          <button onclick="changeThemeColor('purple')" class="w-12 h-12 rounded-2xl bg-[#a855f7] border-2 border-white/10 hover:scale-110 active:scale-95 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-lg shadow-purple-500/10" title="極光紫">🟣</button>
-          <!-- 金色 -->
-          <button onclick="changeThemeColor('gold')" class="w-12 h-12 rounded-2xl bg-[#eab308] border-2 border-white/10 hover:scale-110 active:scale-95 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-lg shadow-yellow-500/10" title="閃耀金">🟡</button>
-        </div>
-      </div>
-
-      <!-- App 運行防護說明 -->
-      <div class="space-y-2.5 border-t border-slate-850/60 pt-4 text-left">
-        <label class="text-xs font-black text-slate-300 block flex items-center gap-1">
-          <i data-lucide="shield-check" class="w-4 h-4 text-theme"></i> 獨立運作防護狀態
-        </label>
-        <div class="bg-slate-950/80 rounded-2xl p-4 space-y-2 text-[11px] text-slate-400 leading-relaxed border border-slate-900">
-          <p>✨ <strong class="text-slate-200">本地離線儲存啟用中</strong>：本系統已完美綁定您手機的本地空間。不論您在多偏僻的羽球場、沒有網卡收訊，資料通通可以正常新增與修改。</p>
-          <p class="text-xs font-bold text-theme">⚠️ 注意：若於瀏覽器沙盒預覽直接重開會因瀏覽器限制清空，建議直接打包成獨立 App 安裝於手機，資料即永不遺失！</p>
-        </div>
-      </div>
-
-      <button onclick="toggleSettingsModal(false)" class="w-full bg-slate-800 hover:bg-slate-750 text-slate-200 font-black text-xs py-3 rounded-2xl transition">
-        完成並返回 App
-      </button>
-    </div>
-  </div>
-
-  <!-- 自訂提示視窗 (Custom Dialog Modal) -->
-  <div id="confirm-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-6 hidden">
-    <div class="bg-slate-900 border border-slate-850 rounded-3xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl">
-      <div class="w-12 h-12 bg-red-950/60 border border-red-500/20 text-red-400 rounded-full flex items-center justify-center mx-auto">
-        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
-      </div>
-      <div class="space-y-1.5">
-        <h4 class="text-sm font-black text-white">確認刪除嗎？</h4>
-        <p id="confirm-modal-text" class="text-xs text-slate-400 leading-relaxed">此動作將無法還原，確定要永久刪除這筆開團資料嗎？</p>
-      </div>
-      <div class="flex gap-2">
-        <button id="confirm-btn-yes" class="flex-1 bg-red-500 text-slate-950 font-black text-xs py-2.5 rounded-2xl hover:bg-red-400 transition">確認刪除</button>
-        <button id="confirm-btn-no" onclick="closeConfirmModal()" class="flex-1 bg-slate-800 text-slate-300 font-bold text-xs py-2.5 rounded-2xl hover:bg-slate-750 transition">取消</button>
+    <!-- 設定視窗 -->
+    <div id="settings-modal" class="fixed inset-0 bg-slate-950/50 hidden z-50 flex items-center justify-center p-6">
+      <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl w-full max-w-sm space-y-4 border dark:border-slate-800">
+        <h2 class="font-black text-lg">系統設定</h2>
+        <button onclick="toggleDark()" class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-2xl font-bold flex justify-between">
+          切換亮/暗模式 <span>🌓</span>
+        </button>
+        <button onclick="toggleModal('settings-modal')" class="w-full bg-slate-200 dark:bg-slate-800 py-3 rounded-2xl font-black">關閉</button>
       </div>
     </div>
   </div>
 
-  <!-- 浮動成功通知 (Custom Toast Alert) -->
-  <div id="toast-notification" class="fixed top-24 left-1/2 -translate-x-1/2 bg-slate-900 border border-slate-800 px-4 py-2.5 rounded-full z-50 flex items-center gap-2 shadow-2xl transition-all duration-300 translate-y-[-20px] opacity-0 pointer-events-none">
-    <div class="w-5 h-5 rounded-full bg-theme/20 text-theme flex items-center justify-center" id="toast-icon-bg">
-      <i id="toast-icon" data-lucide="check" class="w-3.5 h-3.5"></i>
-    </div>
-    <span id="toast-text" class="text-xs font-bold text-slate-100">成功更新資料</span>
-  </div>
-
-  <!-- JS 邏輯區塊 -->
   <script>
-    const STORAGE_KEY = 'badminton_profit_tracker_v1';
-    
-    // 預設資料狀態
     let state = {
-      theme: 'lime',
-      shuttlecocks: [
-        { id: 'shuttle-1', name: 'Yonex AS-50', price: 840 },
-        { id: 'shuttle-2', name: 'RSL No.4', price: 660 }
-      ],
-      records: {
-        '2026-07-14': {
-          courtFee: 1000,
-          shuttlecockId: 'shuttle-1',
-          ballsUsed: 6,
-          fees: [
-            { price: 200, count: 5 },
-            { price: 140, count: 3 }
-          ]
-        }
-      },
-      currentDate: '2026-07-14',
-      currentYear: 2026,
-      currentMonth: 6, // 0-indexed, 6 為 7 月
-      activeTab: 'calendar'
+      records: JSON.parse(localStorage.getItem('ad_badminton_data')) || {},
+      currentDate: '2026-07-16'
     };
 
-    // --- 安全本機儲存防禦機制 (SafeStorage) ---
-    // 解決沙盒環境無法存取 localStorage 的問題，並在正常或獨立打包模式下提供 100% 存取
-    const SafeStorage = {
-      memoryStore: {},
-      isSandboxBlocked: false,
-      
-      getItem(key) {
-        try {
-          return localStorage.getItem(key);
-        } catch (e) {
-          this.isSandboxBlocked = true;
-          return this.memoryStore[key] || null;
-        }
-      },
-      setItem(key, value) {
-        try {
-          localStorage.setItem(key, value);
-          return true;
-        } catch (e) {
-          this.isSandboxBlocked = true;
-          this.memoryStore[key] = value;
-          return false;
-        }
-      }
-    };
+    function toggleDark() { document.documentElement.classList.toggle('dark'); }
+    function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
 
-    function saveState() {
-      const success = SafeStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      const syncStatus = document.getElementById('sync-status');
-      
-      if (!success || SafeStorage.isSandboxBlocked) {
-        syncStatus.innerHTML = `
-          <span class="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-ping"></span>
-          暫存中 (正式打包後免連網永久儲存)
-        `;
-        syncStatus.className = "text-[10px] text-yellow-400 font-bold flex items-center gap-1";
-      } else {
-        syncStatus.innerHTML = `
-          <span class="w-1.5 h-1.5 bg-theme rounded-full animate-ping"></span>
-          本地數據已儲存
-        `;
-        syncStatus.className = "text-[10px] text-theme font-bold flex items-center gap-1 transition-colors duration-500";
+    // 時段邏輯
+    function addTimeSlot(slot) {
+      if (!state.records[state.currentDate]) state.records[state.currentDate] = { timeSlots: [] };
+      if (!state.records[state.currentDate].timeSlots.includes(slot)) {
+        state.records[state.currentDate].timeSlots.push(slot);
+        renderTimeSlots();
       }
     }
 
-    function loadState() {
-      const saved = SafeStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (parsed && typeof parsed === 'object') {
-            state = { ...state, ...parsed };
-          }
-        } catch (e) {
-          console.error("無法讀取本地存檔", e);
-        }
-      }
+    function removeTimeSlot(index) {
+      state.records[state.currentDate].timeSlots.splice(index, 1);
+      renderTimeSlots();
     }
 
-    // 初始化 App
-    window.onload = function() {
-      loadState();
-      
-      // 載入主題配色
-      if (state.theme) {
-        changeThemeColor(state.theme, false);
-      }
-      
-      // 設定預設為今天
-      const today = new Date();
-      const yr = today.getFullYear();
-      const mo = today.getMonth();
-      const dy = String(today.getDate()).padStart(2, '0');
-      state.currentYear = yr;
-      state.currentMonth = mo;
-      state.currentDate = `${yr}-${String(mo + 1).padStart(2, '0')}-${dy}`;
-
-      renderCalendar();
-      renderSessionDetail();
-      renderShuttlecocks();
-      renderHistoryList();
-      updateKpis();
-      
-      if (SafeStorage.isSandboxBlocked) {
-        setTimeout(() => {
-          showToast('⚠️ 瀏覽器沙盒限制存取，打包成獨立手機 App 即可離線永久存檔！', false);
-        }, 2000);
-      }
-      
-      lucide.createIcons();
-    };
-
-    // --- 導覽切換 ---
-    window.changeTab = function(tabName) {
-      state.activeTab = tabName;
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`tab-${tabName}`).classList.remove('hidden');
-
-      // 更新選中標籤
-      document.querySelectorAll('nav button').forEach(btn => {
-        btn.className = 'flex flex-col items-center gap-1.5 text-slate-500 hover:text-slate-200 transition';
-      });
-      document.getElementById(`nav-${tabName}`).className = 'flex flex-col items-center gap-1.5 text-theme transition';
-
-      if (tabName === 'dashboard') {
-        renderDashboardStats();
-      } else if (tabName === 'history') {
-        renderHistoryList();
-      }
-    }
-
-    // --- 主題切換與底部抽屜控制 ---
-    window.toggleSettingsModal = function(show) {
-      const modal = document.getElementById('settings-modal');
-      if (show) {
-        modal.classList.remove('hidden');
-      } else {
-        modal.classList.add('hidden');
-      }
-      lucide.createIcons();
-    }
-
-    window.changeThemeColor = function(themeName, shouldSave = true) {
-      document.body.classList.remove('theme-lime', 'theme-blue', 'theme-red', 'theme-purple', 'theme-gold');
-      document.body.classList.add(`theme-${themeName}`);
-      state.theme = themeName;
-      
-      if (shouldSave) {
-        saveState();
-        showToast(`已成功套用${getThemeChineseName(themeName)}風格！`, true);
-      }
-    }
-
-    function getThemeChineseName(name) {
-      const names = { lime: '活力螢光綠', blue: '科技深邃藍', red: '熱血火焰紅', purple: '神秘極光紫', gold: '皇家閃耀金' };
-      return names[name] || '經典';
-    }
-
-    // --- 日曆渲染核心 ---
-    function renderCalendar() {
-      const year = state.currentYear;
-      const month = state.currentMonth;
-      
-      document.getElementById('calendar-month-title').innerText = `${year}年 ${month + 1}月`;
-      
-      const firstDay = new Date(year, month, 1).getDay();
-      const totalDays = new Date(year, month + 1, 0).getDate();
-      
-      const grid = document.getElementById('calendar-grid');
-      grid.innerHTML = '';
-
-      // 填充前置空格
-      for (let i = 0; i < firstDay; i++) {
-        const emptyCell = document.createElement('div');
-        grid.appendChild(emptyCell);
-      }
-
-      // 生成日期單元格
-      for (let day = 1; day <= totalDays; day++) {
-        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        const record = state.records[dateStr];
-        const isSelected = state.currentDate === dateStr;
-
-        const cell = document.createElement('div');
-        
-        if (isSelected) {
-          cell.className = `min-h-[56px] flex flex-col justify-between items-center py-1.5 rounded-2xl cursor-pointer transition-all border bg-theme text-slate-950 border-theme shadow-lg scale-105 font-black`;
-        } else {
-          cell.className = `min-h-[56px] flex flex-col justify-between items-center py-1.5 rounded-2xl cursor-pointer transition-all border bg-slate-900/60 text-slate-300 border-transparent hover:border-slate-800`;
-        }
-        
-        cell.onclick = () => selectDate(dateStr);
-
-        const dateNum = document.createElement('span');
-        dateNum.className = `text-xs font-bold ${isSelected ? 'text-slate-950' : 'text-slate-400'}`;
-        dateNum.innerText = day;
-        cell.appendChild(dateNum);
-
-        // 如果有開團紀錄，顯示精緻小標籤
-        if (record) {
-          const profit = calculateProfit(record);
-          const profitLabel = document.createElement('span');
-          
-          if (isSelected) {
-            profitLabel.className = 'text-[9px] font-black px-1.5 py-0.5 rounded-full bg-slate-950 text-theme scale-90';
-          } else {
-            profitLabel.className = `text-[9px] font-black px-1.5 py-0.5 rounded-full ${profit >= 0 ? 'bg-emerald-950/40 text-emerald-400' : 'bg-red-950/40 text-red-400'}`;
-          }
-          
-          profitLabel.innerText = `${profit >= 0 ? '+' : ''}${Math.round(profit)}`;
-          cell.appendChild(profitLabel);
-        } else {
-          const spacer = document.createElement('div');
-          spacer.className = 'h-3';
-          cell.appendChild(spacer);
-        }
-
-        grid.appendChild(cell);
-      }
-    }
-
-    window.prevMonth = function() {
-      state.currentMonth--;
-      if (state.currentMonth < 0) {
-        state.currentMonth = 11;
-        state.currentYear--;
-      }
-      renderCalendar();
-    }
-
-    window.nextMonth = function() {
-      state.currentMonth++;
-      if (state.currentMonth > 11) {
-        state.currentMonth = 0;
-        state.currentYear++;
-      }
-      renderCalendar();
-    }
-
-    function selectDate(dateStr) {
-      state.currentDate = dateStr;
-      renderCalendar();
-      renderSessionDetail();
-    }
-
-    // --- 計算邏輯 ---
-    function getShuttlecockSinglePrice(shuttlecockId) {
-      const shuttle = state.shuttlecocks.find(s => s.id === shuttlecockId);
-      return shuttle ? (shuttle.price / 12) : 0;
-    }
-
-    function calculateProfit(record) {
-      const totalIncome = record.fees.reduce((sum, item) => sum + (item.price * item.count), 0);
-      const singlePrice = getShuttlecockSinglePrice(record.shuttlecockId);
-      const ballCost = record.ballsUsed * singlePrice;
-      return totalIncome - (record.courtFee + ballCost);
-    }
-
-    // --- 當日開團記帳詳情更新 ---
-    function renderSessionDetail() {
-      const dateStr = state.currentDate;
-      document.getElementById('detail-date-title').innerText = `${dateStr} 記帳詳情`;
-
-      const select = document.getElementById('select-shuttlecock');
-      select.innerHTML = '';
-      state.shuttlecocks.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.id;
-        opt.innerText = `${s.name} ($${s.price}/筒)`;
-        select.appendChild(opt);
-      });
-
-      const record = state.records[dateStr];
-      const deleteBtn = document.getElementById('btn-delete-record');
-
-      if (record) {
-        deleteBtn.classList.remove('hidden');
-        document.getElementById('input-court-fee').value = record.courtFee;
-        document.getElementById('select-shuttlecock').value = record.shuttlecockId;
-        document.getElementById('input-balls-used').value = record.ballsUsed;
-        renderFeeRows(record.fees);
-      } else {
-        deleteBtn.classList.add('hidden');
-        document.getElementById('input-court-fee').value = '';
-        document.getElementById('input-balls-used').value = '';
-        renderFeeRows([{ price: 200, count: 5 }]);
-      }
-
-      calculateLiveProfit();
-    }
-
-    function renderFeeRows(fees) {
-      const container = document.getElementById('fee-rows-container');
+    function renderTimeSlots() {
+      const container = document.getElementById('time-slots-container');
       container.innerHTML = '';
-      
-      fees.forEach((fee, index) => {
-        const row = document.createElement('div');
-        row.className = 'flex items-center gap-2 bg-slate-950 p-2.5 rounded-2xl border border-slate-900';
-        row.innerHTML = `
-          <div class="flex-1 flex items-center gap-1">
-            <span class="text-[10px] font-bold text-slate-500">NT$</span>
-            <input type="number" value="${fee.price}" oninput="updateFeeRow(${index}, 'price', this.value)" placeholder="金額" class="w-full bg-transparent text-sm font-black text-slate-200 focus:outline-none">
-          </div>
-          <span class="text-xs text-slate-600 font-black">×</span>
-          <div class="w-16 flex items-center gap-1">
-            <input type="number" value="${fee.count}" oninput="updateFeeRow(${index}, 'count', this.value)" placeholder="人數" class="w-full bg-transparent text-sm font-black text-slate-200 text-center focus:outline-none">
-            <span class="text-[10px] font-bold text-slate-500">人</span>
-          </div>
-          <span class="text-xs text-slate-600 font-black">=</span>
-          <div class="w-20 text-right text-xs font-black text-theme pr-1">
-            $${fee.price * fee.count}
-          </div>
-          <button onclick="removeFeeRow(${index})" class="p-1 text-slate-500 hover:text-red-400 transition">
-            <i data-lucide="x" class="w-4 h-4"></i>
-          </button>
-        `;
-        container.appendChild(row);
+      (state.records[state.currentDate]?.timeSlots || []).forEach((slot, i) => {
+        const span = document.createElement('span');
+        span.className = 'bg-theme text-slate-950 text-[10px] px-3 py-1 rounded-lg font-black flex items-center gap-2';
+        span.innerHTML = `${slot} <i data-lucide="x" class="w-3 h-3 cursor-pointer" onclick="removeTimeSlot(${i})"></i>`;
+        container.appendChild(span);
       });
       lucide.createIcons();
     }
 
-    window.addFeeRow = function() {
-      const dateStr = state.currentDate;
-      if (!state.records[dateStr]) {
-        state.records[dateStr] = {
-          courtFee: Number(document.getElementById('input-court-fee').value) || 0,
-          shuttlecockId: document.getElementById('select-shuttlecock').value,
-          ballsUsed: Number(document.getElementById('input-balls-used').value) || 0,
-          fees: [{ price: 200, count: 5 }]
-        };
-      }
-      state.records[dateStr].fees.push({ price: 150, count: 1 });
-      renderFeeRows(state.records[dateStr].fees);
-      calculateLiveProfit();
+    // 計算與儲存
+    function calculate() {
+      const fee = Number(document.getElementById('input-court-fee').value) || 0;
+      const balls = Number(document.getElementById('input-balls').value) || 0;
+      // 假設單顆球成本 50
+      const profit = -(fee + (balls * 50));
+      document.getElementById('display-profit').innerText = `NT$ ${profit}`;
     }
 
-    window.removeFeeRow = function(index) {
-      const dateStr = state.currentDate;
-      if (!state.records[dateStr]) {
-        state.records[dateStr] = {
-          courtFee: Number(document.getElementById('input-court-fee').value) || 0,
-          shuttlecockId: document.getElementById('select-shuttlecock').value,
-          ballsUsed: Number(document.getElementById('input-balls-used').value) || 0,
-          fees: [{ price: 200, count: 5 }]
-        };
-      }
-      state.records[dateStr].fees.splice(index, 1);
-      
-      if (state.records[dateStr].fees.length === 0) {
-        state.records[dateStr].fees.push({ price: 0, count: 0 });
-      }
-      
-      renderFeeRows(state.records[dateStr].fees);
-      calculateLiveProfit();
+    function save() {
+      if (!state.records[state.currentDate]) state.records[state.currentDate] = { timeSlots: [] };
+      state.records[state.currentDate].fee = document.getElementById('input-court-fee').value;
+      state.records[state.currentDate].balls = document.getElementById('input-balls').value;
+      localStorage.setItem('ad_badminton_data', JSON.stringify(state.records));
+      alert('資料已儲存！');
     }
 
-    window.updateFeeRow = function(index, field, value) {
-      const dateStr = state.currentDate;
-      if (!state.records[dateStr]) {
-        state.records[dateStr] = {
-          courtFee: Number(document.getElementById('input-court-fee').value) || 0,
-          shuttlecockId: document.getElementById('select-shuttlecock').value,
-          ballsUsed: Number(document.getElementById('input-balls-used').value) || 0,
-          fees: [{ price: 200, count: 5 }]
-        };
-      }
-      
-      if (!state.records[dateStr].fees[index]) {
-        state.records[dateStr].fees[index] = { price: 0, count: 0 };
-      }
-      
-      state.records[dateStr].fees[index][field] = Number(value) || 0;
-      
-      const rowDivs = document.getElementById('fee-rows-container').children;
-      if (rowDivs[index]) {
-        const item = state.records[dateStr].fees[index];
-        rowDivs[index].querySelector('.w-20').innerText = `$${item.price * item.count}`;
-      }
-      
-      calculateLiveProfit();
-    }
-
-    function getFormInputs() {
-      const courtFee = Number(document.getElementById('input-court-fee').value) || 0;
-      const shuttlecockId = document.getElementById('select-shuttlecock').value;
-      const ballsUsed = Number(document.getElementById('input-balls-used').value) || 0;
-      
-      return {
-        courtFee,
-        shuttlecockId,
-        ballsUsed,
-        fees: [] 
-      };
-    }
-
-    window.calculateLiveProfit = function() {
-      const courtFee = Number(document.getElementById('input-court-fee').value) || 0;
-      const shuttlecockId = document.getElementById('select-shuttlecock').value;
-      const ballsUsed = Number(document.getElementById('input-balls-used').value) || 0;
-      
-      let fees = [];
-      const rows = document.getElementById('fee-rows-container').children;
-      for (let row of rows) {
-        const inputs = row.querySelectorAll('input');
-        if (inputs.length >= 2) {
-          fees.push({
-            price: Number(inputs[0].value) || 0,
-            count: Number(inputs[1].value) || 0
-          });
-        }
-      }
-
-      const totalIncome = fees.reduce((sum, item) => sum + (item.price * item.count), 0);
-      const singlePrice = getShuttlecockSinglePrice(shuttlecockId);
-      const ballCost = Math.round(ballsUsed * singlePrice);
-      const profit = totalIncome - (courtFee + ballCost);
-
-      document.getElementById('live-total-income').innerText = `NT$ ${totalIncome}`;
-      document.getElementById('live-ball-cost').innerText = `NT$ ${ballCost}`;
-      document.getElementById('live-court-fee').innerText = `NT$ ${courtFee}`;
-      
-      const profitEl = document.getElementById('live-net-profit');
-      profitEl.innerText = `${profit >= 0 ? '+' : ''}NT$ ${Math.round(profit)}`;
-      if (profit >= 0) {
-        profitEl.className = 'text-base font-black text-theme transition-colors';
-      } else {
-        profitEl.className = 'text-base font-black text-red-400 transition-colors';
-      }
-    }
-
-    window.saveRecord = function() {
-      const dateStr = state.currentDate;
-      const inputs = getFormInputs();
-      
-      const fees = [];
-      const rows = document.getElementById('fee-rows-container').children;
-      for (let row of rows) {
-        const inputsVal = row.querySelectorAll('input');
-        if (inputsVal.length >= 2) {
-          fees.push({
-            price: Number(inputsVal[0].value) || 0,
-            count: Number(inputsVal[1].value) || 0
-          });
-        }
-      }
-      inputs.fees = fees;
-
-      state.records[dateStr] = inputs;
-      saveState();
-      
-      renderCalendar();
-      renderSessionDetail();
-      updateKpis();
-      renderHistoryList();
-      showToast('今日開團資料已安全儲存！', true);
-    }
-
-    // --- 球種管理模塊 ---
-    function renderShuttlecocks() {
-      const container = document.getElementById('shuttlecocks-list-container');
-      container.innerHTML = '';
-
-      state.shuttlecocks.forEach(s => {
-        const singlePrice = (s.price / 12).toFixed(1);
-        const card = document.createElement('div');
-        card.className = 'bg-slate-900/40 border border-slate-900 rounded-2xl p-4 flex justify-between items-center hover:border-slate-800 transition';
-        card.innerHTML = `
-          <div>
-            <h4 class="text-xs font-black text-slate-100">${s.name}</h4>
-            <p class="text-[10px] text-slate-500">
-              每筒價格: <strong class="text-slate-300 font-medium">$${s.price}</strong> 
-              | 單顆自動成本: <strong class="text-theme font-medium">$${singlePrice}</strong>
-            </p>
-          </div>
-          <div class="flex items-center gap-1">
-            <button onclick="editShuttlecock('${s.id}')" class="p-2 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition">
-              <i data-lucide="edit" class="w-4 h-4"></i>
-            </button>
-            <button onclick="deleteShuttlecock('${s.id}')" class="p-2 hover:bg-red-950/40 rounded-xl text-slate-500 hover:text-red-400 transition">
-              <i data-lucide="trash-2" class="w-4 h-4"></i>
-            </button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
+    window.onload = () => {
+      renderTimeSlots();
       lucide.createIcons();
-    }
-
-    window.calculateLiveShuttleSingle = function() {
-      const price = Number(document.getElementById('input-shuttle-price').value) || 0;
-      document.getElementById('live-shuttle-single-price').innerText = (price / 12).toFixed(1);
-    }
-
-    window.saveShuttlecock = function() {
-      const id = document.getElementById('input-shuttle-id').value;
-      const name = document.getElementById('input-shuttle-name').value.trim();
-      const price = Number(document.getElementById('input-shuttle-price').value) || 0;
-
-      if (!name) {
-        showToast('❌ 請輸入球種名稱', false);
-        return;
-      }
-
-      if (id) {
-        const index = state.shuttlecocks.findIndex(s => s.id === id);
-        if (index !== -1) {
-          state.shuttlecocks[index] = { id, name, price };
-        }
-      } else {
-        const newId = 'shuttle-' + Date.now();
-        state.shuttlecocks.push({ id: newId, name, price });
-      }
-
-      saveState();
-      cancelShuttlecockEdit();
-      renderShuttlecocks();
-      renderSessionDetail();
-      showToast('球種檔案儲存成功！', true);
-    }
-
-    window.editShuttlecock = function(id) {
-      const s = state.shuttlecocks.find(sh => sh.id === id);
-      if (!s) return;
-
-      document.getElementById('input-shuttle-id').value = s.id;
-      document.getElementById('input-shuttle-name').value = s.name;
-      document.getElementById('input-shuttle-price').value = s.price;
-      document.getElementById('live-shuttle-single-price').innerText = (s.price / 12).toFixed(1);
-
-      document.getElementById('shuttle-form-title').innerHTML = `<i data-lucide="edit" class="w-3.5 h-3.5 text-theme"></i> 修改球種設定`;
-      document.getElementById('btn-cancel-shuttle-edit').classList.remove('hidden');
-      lucide.createIcons();
-    }
-
-    window.cancelShuttlecockEdit = function() {
-      document.getElementById('input-shuttle-id').value = '';
-      document.getElementById('input-shuttle-name').value = '';
-      document.getElementById('input-shuttle-price').value = '';
-      document.getElementById('live-shuttle-single-price').innerText = '0';
-
-      document.getElementById('shuttle-form-title').innerHTML = `<i data-lucide="plus-circle" class="w-3.5 h-3.5 text-theme"></i> 新增球種`;
-      document.getElementById('btn-cancel-shuttle-edit').classList.add('hidden');
-      lucide.createIcons();
-    }
-
-    window.deleteShuttlecock = function(id) {
-      showCustomConfirm('確定要永久刪除這個球種嗎？可能會影響到已登記開團紀錄的用球金額計算。', () => {
-        state.shuttlecocks = state.shuttlecocks.filter(s => s.id !== id);
-        saveState();
-        renderShuttlecocks();
-        renderSessionDetail();
-        showToast('球種已成功移除', true);
-      });
-    }
-
-    // --- 開團歷史紀錄 ---
-    function renderHistoryList() {
-      const listContainer = document.getElementById('history-list-container');
-      listContainer.innerHTML = '';
-
-      const sortedDates = Object.keys(state.records).sort((a, b) => new Date(b) - new Date(a));
-      document.getElementById('history-count').innerText = `共 ${sortedDates.length} 場`;
-
-      if (sortedDates.length === 0) {
-        listContainer.innerHTML = `
-          <div class="text-center py-10 text-slate-500">
-            <i data-lucide="clipboard-x" class="w-10 h-10 mx-auto mb-3 opacity-60"></i>
-            <p class="text-xs font-bold">尚無任何開團紀錄</p>
-          </div>
-        `;
-        lucide.createIcons();
-        return;
-      }
-
-      sortedDates.forEach(dateStr => {
-        const record = state.records[dateStr];
-        const profit = calculateProfit(record);
-        const totalIncome = record.fees.reduce((sum, item) => sum + (item.price * item.count), 0);
-        const totalPeople = record.fees.reduce((sum, item) => sum + item.count, 0);
-        const shuttle = state.shuttlecocks.find(s => s.id === record.shuttlecockId) || { name: '未知球種' };
-
-        const card = document.createElement('div');
-        card.className = 'bg-slate-900/90 rounded-2xl p-4 border border-slate-850/60 hover:border-theme/30 transition-all cursor-pointer flex justify-between items-center';
-        card.onclick = () => {
-          state.currentDate = dateStr;
-          const [yr, mo, dy] = dateStr.split('-');
-          state.currentYear = parseInt(yr);
-          state.currentMonth = parseInt(mo) - 1;
-          renderCalendar();
-          renderSessionDetail();
-          changeTab('calendar');
-        };
-
-        card.innerHTML = `
-          <div class="space-y-1">
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-black text-slate-100">${dateStr}</span>
-              <span class="text-[9px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold">球數 ${record.ballsUsed} 顆</span>
-            </div>
-            <p class="text-[10px] text-slate-400">
-              用球: <strong class="text-slate-300 font-medium">${shuttle.name}</strong> 
-              | 臨打: <strong class="text-slate-300 font-medium">${totalPeople} 人</strong>
-            </p>
-          </div>
-          <div class="text-right flex items-center gap-3">
-            <div>
-              <p class="text-[9px] text-slate-500 font-black tracking-wider">實收 / 損益</p>
-              <p class="text-xs font-bold text-slate-300">NT$ ${totalIncome}</p>
-              <span class="text-xs font-black ${profit >= 0 ? 'text-theme' : 'text-red-400'}">
-                ${profit >= 0 ? '+' : ''}NT$ ${Math.round(profit)}
-              </span>
-            </div>
-            <button onclick="deleteRecordFromHistory(event, '${dateStr}')" class="p-2 hover:bg-red-950/40 rounded-xl text-slate-500 hover:text-red-400 transition" title="刪除此紀錄">
-              <i data-lucide="trash-2" class="w-4 h-4"></i>
-            </button>
-          </div>
-        `;
-        listContainer.appendChild(card);
-      });
-      lucide.createIcons();
-    }
-
-    window.deleteRecord = function() {
-      showCustomConfirm('確定要永久刪除此日期的所有開團資料嗎？', () => {
-        delete state.records[state.currentDate];
-        saveState();
-        renderCalendar();
-        renderSessionDetail();
-        updateKpis();
-        renderHistoryList();
-        showToast('開團紀錄已成功移除', true);
-      });
-    }
-
-    window.deleteRecordFromHistory = function(event, dateStr) {
-      event.stopPropagation(); 
-      showCustomConfirm(`確定要永久刪除 ${dateStr} 的這筆開團資料嗎？`, () => {
-        delete state.records[dateStr];
-        saveState();
-        
-        if (state.currentDate === dateStr) {
-          renderSessionDetail();
-        }
-        
-        renderCalendar();
-        updateKpis();
-        renderHistoryList();
-        if (state.activeTab === 'dashboard') {
-          renderDashboardStats();
-        }
-        showToast('開團紀錄已成功移除', true);
-      });
-    }
-
-    // --- 數據統計與 KPI ---
-    function updateKpis() {
-      let totalProfit = 0;
-      let totalSessions = 0;
-      let totalBalls = 0;
-
-      Object.values(state.records).forEach(record => {
-        totalProfit += calculateProfit(record);
-        totalSessions++;
-        totalBalls += record.ballsUsed;
-      });
-
-      const profitEl = document.getElementById('kpi-profit');
-      profitEl.innerText = `${totalProfit >= 0 ? '+' : ''}NT$ ${Math.round(totalProfit)}`;
-      if (totalProfit >= 0) {
-        profitEl.className = 'text-sm font-black text-theme';
-      } else {
-        profitEl.className = 'text-sm font-black text-red-400';
-      }
-
-      document.getElementById('kpi-count').innerText = `${totalSessions} 場`;
-      document.getElementById('kpi-balls').innerText = `${totalBalls} 顆`;
-    }
-
-    function renderDashboardStats() {
-      let totalIncome = 0;
-      let totalProfit = 0;
-      let totalCourt = 0;
-      let totalBallsCost = 0;
-      let count = 0;
-
-      Object.values(state.records).forEach(record => {
-        const income = record.fees.reduce((sum, item) => sum + (item.price * item.count), 0);
-        const ballCost = record.ballsUsed * getShuttlecockSinglePrice(record.shuttlecockId);
-        
-        totalIncome += income;
-        totalCourt += record.courtFee;
-        totalBallsCost += ballCost;
-        totalProfit += calculateProfit(record);
-        count++;
-      });
-
-      document.getElementById('stat-total-income').innerText = `NT$ ${totalIncome}`;
-      document.getElementById('stat-total-court').innerText = `NT$ ${totalCourt}`;
-      document.getElementById('stat-total-balls-cost').innerText = `NT$ ${Math.round(totalBallsCost)}`;
-      
-      const profitEl = document.getElementById('stat-total-profit');
-      profitEl.innerText = `${totalProfit >= 0 ? '+' : ''}NT$ ${Math.round(totalProfit)}`;
-      if (totalProfit >= 0) {
-        profitEl.className = 'text-base font-black text-theme';
-      } else {
-        profitEl.className = 'text-base font-black text-red-400';
-      }
-
-      const avgIncome = count > 0 ? Math.round(totalIncome / count) : 0;
-      const avgProfit = count > 0 ? Math.round(totalProfit / count) : 0;
-
-      document.getElementById('stat-avg-income').innerText = `NT$ ${avgIncome}`;
-      document.getElementById('stat-avg-profit').innerText = `${avgProfit >= 0 ? '+' : ''}NT$ ${avgProfit}`;
-      document.getElementById('stat-avg-profit').className = `font-black ${avgProfit >= 0 ? 'text-theme' : 'text-red-400'}`;
-    }
-
-    // --- 自訂提示框與 UI 通知元件 ---
-    let activeConfirmCallback = null;
-
-    window.showCustomConfirm = function(text, onConfirm) {
-      document.getElementById('confirm-modal-text').innerText = text;
-      document.getElementById('confirm-modal').classList.remove('hidden');
-      activeConfirmCallback = onConfirm;
-    }
-
-    window.closeConfirmModal = function() {
-      document.getElementById('confirm-modal').classList.add('hidden');
-      activeConfirmCallback = null;
-    }
-
-    document.getElementById('confirm-btn-yes').onclick = function() {
-      if (activeConfirmCallback) {
-        activeConfirmCallback();
-      }
-      closeConfirmModal();
-    }
-
-    window.showToast = function(msg, isSuccess = true) {
-      const toast = document.getElementById('toast-notification');
-      const icon = document.getElementById('toast-icon');
-      const text = document.getElementById('toast-text');
-
-      text.innerText = msg;
-      
-      if (isSuccess) {
-        icon.setAttribute('data-lucide', 'check');
-        document.getElementById('toast-icon-bg').className = 'w-5 h-5 rounded-full bg-theme/20 text-theme flex items-center justify-center';
-      } else {
-        icon.setAttribute('data-lucide', 'alert-circle');
-        document.getElementById('toast-icon-bg').className = 'w-5 h-5 rounded-full bg-red-400/20 text-red-400 flex items-center justify-center';
-      }
-      lucide.createIcons();
-
-      toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-20px]');
-      toast.classList.add('opacity-100', 'translate-y-0');
-
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-20px]');
-        toast.classList.remove('opacity-100', 'translate-y-0');
-      }, 3000);
-    }
+    };
   </script>
 </body>
 </html>
