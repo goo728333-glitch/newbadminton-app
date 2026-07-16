@@ -217,14 +217,16 @@
           <!-- 記帳表單 inputs -->
           <div class="space-y-4">
             
-            <!-- ⭐ 新增：時段快速選擇器 -->
+            <!-- ⭐ 新增：自訂時段快速選擇器 -->
             <div class="space-y-1.5">
-              <label class="text-xs font-black text-slate-500 dark:text-slate-400">開團時段 (可複選自動帶入)</label>
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-black text-slate-500 dark:text-slate-400">開團時段 (可預排未來行程)</label>
+                <button onclick="toggleEditTimeSlots()" id="btn-edit-slots" class="text-[10px] text-slate-400 hover:text-theme font-bold transition flex items-center gap-1">
+                  <i data-lucide="edit-2" class="w-3 h-3"></i> 編輯選項
+                </button>
+              </div>
               <div class="flex flex-wrap gap-2" id="time-slots-container">
-                <button onclick="toggleTimeSlot(this)" data-slot="18-20" class="time-slot-btn px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-800 text-xs font-bold text-slate-600 dark:text-slate-400 transition-all">18-20</button>
-                <button onclick="toggleTimeSlot(this)" data-slot="19-21" class="time-slot-btn px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-800 text-xs font-bold text-slate-600 dark:text-slate-400 transition-all">19-21</button>
-                <button onclick="toggleTimeSlot(this)" data-slot="20-22" class="time-slot-btn px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-800 text-xs font-bold text-slate-600 dark:text-slate-400 transition-all">20-22</button>
-                <button onclick="toggleTimeSlot(this)" data-slot="21-23" class="time-slot-btn px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-800 text-xs font-bold text-slate-600 dark:text-slate-400 transition-all">21-23</button>
+                <!-- 動態生成時段與新增按鈕 -->
               </div>
             </div>
 
@@ -495,27 +497,19 @@
     let state = {
       theme: 'lime',
       isDarkMode: true, // 預設深色模式
+      availableTimeSlots: ['18-20', '19-21', '20-22', '21-23'], // 動態管理的時段選項
       shuttlecocks: [
         { id: 'shuttle-1', name: 'Yonex AS-50', price: 840 },
         { id: 'shuttle-2', name: 'RSL No.4', price: 660 }
       ],
-      records: {
-        '2026-07-14': {
-          courtFee: 1000,
-          shuttlecockId: 'shuttle-1',
-          ballsUsed: 6,
-          timeSlots: ['19-21', '21-23'], // 範例：時段紀錄
-          fees: [
-            { price: 200, count: 5 },
-            { price: 140, count: 3 }
-          ]
-        }
-      },
-      currentDate: '2026-07-14',
+      records: {},
+      currentDate: '',
       currentYear: 2026,
       currentMonth: 6, 
       activeTab: 'calendar'
     };
+
+    let isEditingTimeSlots = false; // 控制時段是否處於編輯模式
 
     // 安全儲存
     const SafeStorage = {
@@ -533,7 +527,6 @@
 
     function saveState() {
       SafeStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      // 省略狀態標籤更新...
     }
 
     function loadState() {
@@ -543,6 +536,10 @@
           const parsed = JSON.parse(saved);
           if (parsed && typeof parsed === 'object') {
             state = { ...state, ...parsed };
+            // 兼容舊資料，確保有可用時段陣列
+            if (!state.availableTimeSlots) {
+              state.availableTimeSlots = ['18-20', '19-21', '20-22', '21-23'];
+            }
           }
         } catch (e) { console.error(e); }
       }
@@ -626,7 +623,7 @@
       else modal.classList.add('hidden');
     }
 
-    // --- 日曆核心 (加入時段膠囊) ---
+    // --- 日曆核心 ---
     function renderCalendar() {
       const year = state.currentYear;
       const month = state.currentMonth;
@@ -647,7 +644,6 @@
         const isSelected = state.currentDate === dateStr;
 
         const cell = document.createElement('div');
-        // 加大高度以容納時段小標籤
         if (isSelected) {
           cell.className = `min-h-[64px] flex flex-col items-center py-1.5 rounded-2xl cursor-pointer transition-all border bg-theme text-slate-950 border-theme shadow-lg scale-105 font-black`;
         } else {
@@ -661,27 +657,39 @@
         cell.appendChild(dateNum);
 
         if (record) {
-          // 渲染時段小膠囊
+          const labelsDiv = document.createElement('div');
+          labelsDiv.className = 'flex flex-col items-center gap-1 w-full px-1 mt-1';
+
+          // 1. 渲染時段小膠囊
           if (record.timeSlots && record.timeSlots.length > 0) {
             const slotsDiv = document.createElement('div');
-            slotsDiv.className = 'flex flex-wrap justify-center gap-[2px] mt-1 w-full px-1';
+            slotsDiv.className = 'flex flex-wrap justify-center gap-[2px] w-full';
             record.timeSlots.forEach(slot => {
               const pill = document.createElement('span');
               pill.className = `text-[8px] leading-none px-1 py-[3px] rounded-[4px] ${isSelected ? 'bg-slate-950/20 text-slate-950' : 'bg-theme/20 text-theme'} font-black truncate max-w-full`;
               pill.innerText = slot;
               slotsDiv.appendChild(pill);
             });
-            cell.appendChild(slotsDiv);
-          } else {
-            // 如果沒有填寫時段，顯示利潤
-            const profit = calculateProfit(record);
+            labelsDiv.appendChild(slotsDiv);
+          }
+
+          // 2. 計算總收支
+          const totalIncome = record.fees.reduce((sum, item) => sum + (item.price * item.count), 0);
+          const totalExpenses = record.courtFee + (record.ballsUsed * getShuttlecockSinglePrice(record.shuttlecockId));
+          
+          // ⭐ 核心防護：如果是有實際金額運作的場次，才顯示利潤。
+          // 這樣未來行程只排時段的話，就不會出現奇怪的 +0 利潤膠囊，實現完美的「預排行事曆」功能！
+          if (totalIncome > 0 || totalExpenses > 0 || record.ballsUsed > 0 || record.courtFee > 0) {
+            const profit = totalIncome - totalExpenses;
             const profitLabel = document.createElement('span');
             profitLabel.className = isSelected 
-              ? 'text-[9px] font-black px-1.5 py-0.5 mt-1 rounded-full bg-slate-950 text-theme scale-90'
-              : `text-[9px] font-black px-1.5 py-0.5 mt-1 rounded-full ${profit >= 0 ? 'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400' : 'bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400'}`;
+              ? 'text-[9px] font-black px-1.5 py-0.5 rounded-full bg-slate-950 text-theme scale-90'
+              : `text-[9px] font-black px-1.5 py-0.5 rounded-full ${profit >= 0 ? 'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400' : 'bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400'}`;
             profitLabel.innerText = `${profit >= 0 ? '+' : ''}${Math.round(profit)}`;
-            cell.appendChild(profitLabel);
+            labelsDiv.appendChild(profitLabel);
           }
+
+          cell.appendChild(labelsDiv);
         }
         grid.appendChild(cell);
       }
@@ -705,11 +713,94 @@
       renderSessionDetail();
     }
 
-    // --- 時段選擇按鈕邏輯 ---
+    // --- ⭐ 新增/管理：自訂開團時段按鈕核心邏輯 ---
+    function renderTimeSlotButtons() {
+      const container = document.getElementById('time-slots-container');
+      container.innerHTML = '';
+      
+      const record = state.records[state.currentDate] || {};
+      const activeSlots = record.timeSlots || [];
+
+      // 渲染每個時段按鈕
+      state.availableTimeSlots.forEach((slot, index) => {
+        const isActive = activeSlots.includes(slot);
+        const btnWrapper = document.createElement('div');
+        
+        if (isEditingTimeSlots) {
+          // 編輯模式：顯示刪除樣式
+          btnWrapper.innerHTML = `
+            <button onclick="deleteTimeSlot(${index})" class="px-3 py-1.5 rounded-xl border border-dashed border-red-300 dark:border-red-800/50 text-red-500 text-xs font-bold bg-red-50 dark:bg-red-950/30 flex items-center gap-1 hover:bg-red-100 dark:hover:bg-red-900/50 transition-all">
+              ${slot} <i data-lucide="x" class="w-3 h-3"></i>
+            </button>
+          `;
+        } else {
+          // 正常選擇模式
+          btnWrapper.innerHTML = `
+            <button onclick="toggleTimeSlot(this)" data-slot="${slot}" class="time-slot-btn px-3 py-1.5 rounded-xl border ${isActive ? 'active bg-theme border-theme text-slate-950' : 'border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-400'} text-xs font-bold transition-all">
+              ${slot}
+            </button>
+          `;
+        }
+        container.appendChild(btnWrapper);
+      });
+
+      // 編輯模式：附加「+ 新增時段」按鈕
+      if (isEditingTimeSlots) {
+        const addBtn = document.createElement('button');
+        addBtn.onclick = () => {
+          const newSlot = prompt("請輸入自訂時段 (例如：早上團、假日加開、14-16)：");
+          if (newSlot && newSlot.trim()) {
+            if (!state.availableTimeSlots.includes(newSlot.trim())) {
+              state.availableTimeSlots.push(newSlot.trim());
+              saveState();
+              renderTimeSlotButtons();
+            } else {
+              showToast('這個時段選項已經存在囉！', false);
+            }
+          }
+        };
+        addBtn.className = 'px-3 py-1.5 rounded-xl border border-dashed border-slate-400 dark:border-slate-600 text-slate-500 text-xs font-bold hover:text-theme hover:border-theme transition-all flex items-center gap-1';
+        addBtn.innerHTML = `<i data-lucide="plus" class="w-3 h-3"></i> 新增時段`;
+        container.appendChild(addBtn);
+      }
+
+      // 更新右上角按鈕的狀態與文字
+      const btnEdit = document.getElementById('btn-edit-slots');
+      if (isEditingTimeSlots) {
+        btnEdit.innerHTML = `<i data-lucide="check" class="w-3 h-3 text-theme"></i> <span class="text-theme">完成編輯</span>`;
+      } else {
+        btnEdit.innerHTML = `<i data-lucide="edit-2" class="w-3 h-3"></i> 編輯選項`;
+      }
+
+      lucide.createIcons();
+    }
+
+    window.toggleEditTimeSlots = function() {
+      isEditingTimeSlots = !isEditingTimeSlots;
+      renderTimeSlotButtons();
+    }
+
+    window.deleteTimeSlot = function(index) {
+      showCustomConfirm('確定要刪除這個時段選項嗎？\n(這不會影響已儲存的開團紀錄唷！)', () => {
+        state.availableTimeSlots.splice(index, 1);
+        saveState();
+        renderTimeSlotButtons();
+        showToast('選項已刪除', true);
+      });
+    }
+
     window.toggleTimeSlot = function(btn) {
       btn.classList.toggle('active');
-      calculateLiveProfit(); // 觸發暫存以便儲存
+      if (btn.classList.contains('active')) {
+        btn.classList.remove('border-slate-300', 'dark:border-slate-800', 'text-slate-600', 'dark:text-slate-400');
+        btn.classList.add('bg-theme', 'border-theme', 'text-slate-950');
+      } else {
+        btn.classList.add('border-slate-300', 'dark:border-slate-800', 'text-slate-600', 'dark:text-slate-400');
+        btn.classList.remove('bg-theme', 'border-theme', 'text-slate-950');
+      }
+      calculateLiveProfit();
     }
+
 
     // --- 計算利潤與更新詳情 ---
     function getShuttlecockSinglePrice(id) {
@@ -736,8 +827,9 @@
       const record = state.records[dateStr];
       const deleteBtn = document.getElementById('btn-delete-record');
 
-      // 重置時段選單狀態
-      document.querySelectorAll('.time-slot-btn').forEach(b => b.classList.remove('active'));
+      // 強制關閉編輯模式並重新渲染按鈕
+      isEditingTimeSlots = false;
+      renderTimeSlotButtons();
 
       if (record) {
         deleteBtn.classList.remove('hidden');
@@ -745,13 +837,6 @@
         document.getElementById('select-shuttlecock').value = record.shuttlecockId;
         document.getElementById('input-balls-used').value = record.ballsUsed;
         renderFeeRows(record.fees);
-        // 還原勾選時段
-        if(record.timeSlots) {
-          record.timeSlots.forEach(slot => {
-            const btn = document.querySelector(`.time-slot-btn[data-slot="${slot}"]`);
-            if (btn) btn.classList.add('active');
-          });
-        }
       } else {
         deleteBtn.classList.add('hidden');
         document.getElementById('input-court-fee').value = '';
@@ -830,6 +915,7 @@
     }
 
     function getFormInputs() {
+      // 讀取當下所有被標記為 active 的時段按鈕
       const timeSlots = Array.from(document.querySelectorAll('.time-slot-btn.active')).map(b => b.dataset.slot);
       return {
         courtFee: Number(document.getElementById('input-court-fee').value) || 0,
@@ -895,7 +981,7 @@
       });
     }
 
-    // --- 其餘管理與歷史渲染邏輯 ---
+    // --- 球種管理模塊 ---
     function renderShuttlecocks() {
       const container = document.getElementById('shuttlecocks-list-container');
       container.innerHTML = '';
@@ -920,7 +1006,6 @@
       lucide.createIcons();
     }
 
-    // 省略少許無更動的基礎邏輯（saveShuttlecock 等保留與原版相同核心）
     window.calculateLiveShuttleSingle = function() {
       const price = Number(document.getElementById('input-shuttle-price').value) || 0;
       document.getElementById('live-shuttle-single-price').innerText = (price / 12).toFixed(1);
@@ -980,7 +1065,6 @@
         const people = record.fees.reduce((s, i) => s + i.count, 0);
         const shuttle = state.shuttlecocks.find(s => s.id === record.shuttlecockId) || { name: '未知' };
         
-        // 將時段陣列轉換為可讀字串，例如 "19-21, 21-23"
         const timeSlotStr = (record.timeSlots && record.timeSlots.length > 0) ? record.timeSlots.join(', ') : '未登記時段';
 
         const card = document.createElement('div');
