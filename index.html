@@ -98,13 +98,14 @@
       <!-- TAB 1: 羽球日曆主頁 -->
       <div id="tab-calendar" class="tab-content space-y-6 fade-in">
         <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-850 rounded-3xl p-4 space-y-4 shadow-sm">
+          <!-- 🛠️ 核心修正：加入 pointer-events-none 防止 Lucide 圖標阻擋點擊事件傳遞 -->
           <div class="flex justify-between items-center px-1">
             <button onclick="prevMonth()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
-              <i data-lucide="chevron-left" class="w-5 h-5"></i>
+              <i data-lucide="chevron-left" class="w-5 h-5 pointer-events-none"></i>
             </button>
             <h2 id="calendar-month-title" class="text-base font-black text-slate-900 dark:text-white tracking-widest">2026年 7月</h2>
             <button onclick="nextMonth()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
-              <i data-lucide="chevron-right" class="w-5 h-5"></i>
+              <i data-lucide="chevron-right" class="w-5 h-5 pointer-events-none"></i>
             </button>
           </div>
 
@@ -278,7 +279,7 @@
       <!-- TAB 4: 數據分析看板 -->
       <div id="tab-dashboard" class="tab-content space-y-6 hidden fade-in">
         <div>
-          <h2 class="text-base font-black text-slate-900 dark:text-white">收支數據 analysis</h2>
+          <h2 class="text-base font-black text-slate-900 dark:text-white">收支數據分析</h2>
           <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold">開團累積收支、平均場次分析</p>
         </div>
 
@@ -321,19 +322,19 @@
 
     <nav class="absolute bottom-0 left-0 w-full bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-900 flex justify-around items-center px-4 z-40 shrink-0 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] dark:shadow-none" style="height: calc(5rem + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);">
       <button id="nav-calendar" onclick="changeTab('calendar')" class="flex flex-col items-center gap-1.5 text-theme transition">
-        <i data-lucide="calendar" class="w-5 h-5"></i>
+        <i data-lucide="calendar" class="w-5 h-5 pointer-events-none"></i>
         <span class="text-[10px] font-black">羽球日曆</span>
       </button>
       <button id="nav-history" onclick="changeTab('history')" class="flex flex-col items-center gap-1.5 text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition">
-        <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+        <i data-lucide="clipboard-list" class="w-5 h-5 pointer-events-none"></i>
         <span class="text-[10px] font-black">開團歷史</span>
       </button>
       <button id="nav-shuttlecocks" onclick="changeTab('shuttlecocks')" class="flex flex-col items-center gap-1.5 text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition">
-        <i data-lucide="feather" class="w-5 h-5"></i>
+        <i data-lucide="feather" class="w-5 h-5 pointer-events-none"></i>
         <span class="text-[10px] font-black">球種管理</span>
       </button>
       <button id="nav-dashboard" onclick="changeTab('dashboard')" class="flex flex-col items-center gap-1.5 text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition">
-        <i data-lucide="trending-up" class="w-5 h-5"></i>
+        <i data-lucide="trending-up" class="w-5 h-5 pointer-events-none"></i>
         <span class="text-[10px] font-black">數據分析</span>
       </button>
     </nav>
@@ -358,8 +359,8 @@
       <div class="space-y-3 border-t border-slate-150 dark:border-slate-850/60 pt-4 text-left">
         <label class="text-xs font-black text-slate-700 dark:text-slate-300 block">🌓 顯示模式切換：</label>
         <div class="grid grid-cols-2 gap-3 pt-1">
-          <button onclick="toggleAppMode('dark')" id="mode-btn-dark" class="flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border transition-all duration-300"></button>
-          <button onclick="toggleAppMode('light')" id="mode-btn-light" class="flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border transition-all duration-300"></button>
+          <button onclick="toggleAppMode('dark')" id="mode-btn-dark" class="flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border transition-all duration-300">深色科技風</button>
+          <button onclick="toggleAppMode('light')" id="mode-btn-light" class="flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border transition-all duration-300">活力淺色風</button>
         </div>
       </div>
 
@@ -380,10 +381,10 @@
         </label>
         <div class="grid grid-cols-2 gap-3 pt-1">
           <button onclick="exportData()" class="flex items-center justify-center gap-2 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl font-black text-xs text-slate-700 dark:text-slate-300 hover:text-theme transition">
-            <i data-lucide="download" class="w-4 h-4"></i> 匯出Json檔案
+            <i data-lucide="download" class="w-4 h-4 pointer-events-none"></i> 匯出Json檔案
           </button>
           <button onclick="triggerImport()" class="flex items-center justify-center gap-2 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl font-black text-xs text-slate-700 dark:text-slate-300 hover:text-theme transition">
-            <i data-lucide="upload" class="w-4 h-4"></i> 匯入Json檔案
+            <i data-lucide="upload" class="w-4 h-4 pointer-events-none"></i> 匯入Json檔案
           </button>
         </div>
         <input type="file" id="import-file-input" class="hidden" accept=".json" onchange="importData(event)">
@@ -412,7 +413,7 @@
   <div id="template-modal" class="fixed inset-0 bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-6 hidden">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-3xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl">
       <div class="w-12 h-12 bg-theme/20 text-theme rounded-full flex items-center justify-center mx-auto">
-        <i data-lucide="bookmark" class="w-6 h-6"></i>
+        <i data-lucide="bookmark" class="w-6 h-6 pointer-events-none"></i>
       </div>
       <div class="space-y-1.5 text-left">
         <h4 class="text-sm font-black text-slate-900 dark:text-white">儲存為常用模板</h4>
@@ -430,7 +431,7 @@
   <div id="confirm-modal" class="fixed inset-0 bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-6 hidden">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-3xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl">
       <div class="w-12 h-12 bg-red-50 dark:bg-red-950/60 border border-red-200 text-red-500 rounded-full flex items-center justify-center mx-auto">
-        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+        <i data-lucide="alert-triangle" class="w-6 h-6 pointer-events-none"></i>
       </div>
       <div class="space-y-1.5">
         <h4 class="text-sm font-black text-slate-900 dark:text-white">確認執行嗎？</h4>
@@ -451,7 +452,7 @@
   </div>
 
   <script>
-    // ⭐ 核心防護：固定唯一的 LocalStorage 識別代碼，未來後台無論如何改版都不可以動到這一行
+    // ⭐ 核心相容防護：LocalStorage 識別金鑰固定，後台永遠改版都不受影響
     const STORAGE_KEY = 'badminton_profit_tracker_final'; 
     
     let state = {
@@ -484,7 +485,7 @@
       const success = SafeStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       const syncStatus = document.getElementById('sync-status');
       if (!success || SafeStorage.isSandboxBlocked) {
-        syncStatus.innerHTML = `<span class="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-ping"></span>暫存中 (安全記憶體模式)`;
+        syncStatus.innerHTML = `<span class="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-ping"></span>暫存中 (記憶體保護模式)`;
         syncStatus.className = "text-[10px] text-yellow-500 font-bold flex items-center gap-1";
       } else {
         syncStatus.innerHTML = `<span class="w-1.5 h-1.5 bg-theme rounded-full animate-ping"></span>本地數據已儲存`;
@@ -492,7 +493,6 @@
       }
     }
 
-    // ⭐ 升級轉化器：不管匯出或貼上的格式是多舊的版本，一進系統自動強制整形升級！
     function migrateData(oldState) {
       if (!oldState) oldState = {};
       if (!oldState.records) oldState.records = {};
@@ -541,7 +541,7 @@
           if (parsed && typeof parsed === 'object') {
             state = { ...state, ...migrateData(parsed) };
           }
-        } catch (e) { console.error("存檔解析錯誤", e); }
+        } catch (e) { console.error("資料遷移異常", e); }
       }
     }
 
@@ -599,17 +599,17 @@
       if (mode === 'light') {
         htmlEl.classList.remove('dark');
         if (lightBtn && darkBtn) {
-          lightBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-theme text-slate-950 border-theme shadow-md scale-102 transition-all";
-          darkBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-slate-100 dark:bg-slate-900 border-slate-200 text-slate-400 transition-all";
+          lightBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-theme text-slate-950 border-theme shadow-md scale-102 transition-all duration-300";
+          darkBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-slate-100 dark:bg-slate-900 border-slate-200 text-slate-400 transition-all duration-300";
         }
       } else {
         htmlEl.classList.add('dark');
         if (darkBtn && lightBtn) {
-          darkBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-theme text-slate-950 border-theme shadow-md scale-102 transition-all";
-          lightBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-slate-100 dark:bg-slate-900 border-slate-200 text-slate-400 transition-all";
+          darkBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-theme text-slate-950 border-theme shadow-md scale-102 transition-all duration-300";
+          lightBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-slate-100 dark:bg-slate-900 border-slate-200 text-slate-400 transition-all duration-300";
         }
       }
-      if (shouldSave) { saveState(); showToast(`已變更顯示模式！`, true); }
+      if (shouldSave) { saveState(); showToast(`顯示模式切換成功！`, true); }
       lucide.createIcons();
     }
 
@@ -621,11 +621,11 @@
       const primaryColor = colorsMap[themeName] || '132 204 22';
       document.documentElement.style.setProperty('--color-primary', primaryColor);
       document.documentElement.style.setProperty('--color-glow', `rgba(${primaryColor}, 0.12)`);
-      if (shouldSave) { saveState(); showToast(`主題更換成功！`, true); }
+      if (shouldSave) { saveState(); showToast(`外觀色彩更換成功！`, true); }
       if (state.themeMode) toggleAppMode(state.themeMode, false);
     }
 
-    // 🛠️ 核心修正：點擊前後月份時呼叫 renderCalendar() 重新繪製畫面，修復卡死問題
+    // 🛠️ 重新渲染月份控制
     window.prevMonth = function() {
       state.currentMonth--;
       if (state.currentMonth < 0) { state.currentMonth = 11; state.currentYear--; }
@@ -731,7 +731,7 @@
       } else {
         deleteBtn.classList.add('hidden');
         document.getElementById('sessions-tabs-container').innerHTML = `
-          <div class="text-slate-400 dark:text-slate-500 text-xs py-3 px-1 font-bold flex items-center gap-1"><i data-lucide="info" class="w-3.5 h-3.5"></i> 請點「新增時段」測試時間、場面數與即時金額。</div>
+          <div class="text-slate-400 dark:text-slate-500 text-xs py-3 px-1 font-bold flex items-center gap-1"><i data-lucide="info" class="w-3.5 h-3.5"></i> 請點「新增時段」直接預覽幾面場地與即時金額計算。</div>
         `;
         form.classList.add('hidden');
       }
@@ -750,7 +750,7 @@
         if (isActive) {
           card.className = `flex-shrink-0 bg-theme text-slate-950 px-3.5 py-2 rounded-xl flex flex-col min-w-[105px] border border-theme shadow text-left`;
         } else {
-          card.className = `flex-shrink-0 bg-white dark:bg-slate-950/60 text-slate-700 border border-slate-200 dark:border-slate-900 px-3.5 py-2 rounded-xl flex flex-col min-w-[105px] text-left shadow-sm`;
+          card.className = `flex-shrink-0 bg-white dark:bg-slate-950/60 text-slate-700 border border-slate-200 dark:border-slate-900 px-3.5 py-2 rounded-xl flex flex-col min-w-[105px] text-left shadow-sm dark:text-slate-300`;
         }
         card.innerHTML = `
           <div class="flex items-center justify-between w-full mb-1">
@@ -787,12 +787,12 @@
           optionsHtml += `<option value="${s.id}" ${sb.shuttlecockId === s.id ? 'selected' : ''}>${s.name} ($${s.price}/筒)</option>`;
         });
         row.innerHTML = `
-          <div class="flex-1"><select onchange="updateShuttleRow(${index}, 'shuttlecockId', this.value)" class="w-full bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none">${optionsHtml}</select></div>
+          <div class="flex-1"><select onchange="updateShuttlerow(${index}, 'shuttlecockId', this.value)" class="w-full bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none">${optionsHtml}</select></div>
           <div class="w-20 flex items-center gap-1 border-l border-slate-200 dark:border-slate-800 pl-2">
-            <input type="number" value="${sb.count || ''}" oninput="updateShuttleRow(${index}, 'count', this.value)" placeholder="0" class="w-full bg-transparent text-sm font-black text-slate-800 dark:text-slate-200 text-center focus:outline-none">
+            <input type="number" value="${sb.count || ''}" oninput="updateShuttlerow(${index}, 'count', this.value)" placeholder="0" class="w-full bg-transparent text-sm font-black text-slate-800 dark:text-slate-200 text-center focus:outline-none">
             <span class="text-[10px] font-bold text-slate-400">顆</span>
           </div>
-          <button onclick="removeShuttleRow(${index})" class="p-1 text-slate-400 hover:text-red-500 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+          <button onclick="removeShuttleRow(${index})" class="p-1 text-slate-400 hover:text-red-500 transition"><i data-lucide="x" class="w-4 h-4 pointer-events-none"></i></button>
         `;
         container.appendChild(row);
       });
@@ -817,7 +817,7 @@
           </div>
           <span class="text-xs text-slate-400 font-black">=</span>
           <div class="w-20 text-right text-xs font-black text-theme pr-1">$${fee.price * fee.count}</div>
-          <button onclick="removeFeeRow(${index})" class="p-1 text-slate-400 hover:text-red-500 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
+          <button onclick="removeFeeRow(${index})" class="p-1 text-slate-400 hover:text-red-500 transition"><i data-lucide="x" class="w-4 h-4 pointer-events-none"></i></button>
         `;
         container.appendChild(row);
       });
@@ -868,7 +868,7 @@
         renderShuttleRows(activeSess.shuttleballs); calculateLiveProfit();
       }
     }
-    window.updateShuttleRow = function(index, field, value) {
+    window.updateShuttlerow = function(index, field, value) {
       const activeSess = state.records[state.currentDate]?.sessions.find(s => s.id === state.currentSessionId);
       if (activeSess?.shuttleballs?.[index]) { activeSess.shuttleballs[index][field] = field === 'count' ? (Number(value) || 0) : value; calculateLiveProfit(); }
     }
@@ -937,7 +937,7 @@
         pill.className = 'flex-shrink-0 flex items-center bg-slate-100 dark:bg-slate-900 rounded-full pl-3 pr-2 py-1 gap-1 border border-slate-200 dark:border-slate-800 shadow-sm';
         pill.innerHTML = `
           <button onclick="applyTemplate('${t.id}')" class="text-[10px] font-black text-slate-700 dark:text-slate-300 hover:text-theme pr-1">${t.name}</button>
-          <button onclick="deleteTemplate('${t.id}', event)" class="p-0.5 text-slate-400 hover:text-red-500 rounded-full"><i data-lucide="x" class="w-3 h-3"></i></button>
+          <button onclick="deleteTemplate('${t.id}', event)" class="p-0.5 text-slate-400 hover:text-red-500 rounded-full"><i data-lucide="x" class="w-3 h-3 pointer-events-none"></i></button>
         `;
         container.appendChild(pill);
       });
@@ -1027,8 +1027,8 @@
             <p class="text-[10px] text-slate-500">每筒價格: <strong>$${s.price}</strong> | 單顆成本: <strong class="text-theme">$ ${(s.price / 12).toFixed(1)}</strong></p>
           </div>
           <div class="flex items-center gap-1">
-            <button onclick="editShuttlecock('${s.id}')" class="p-2 text-slate-400 hover:text-slate-800 dark:hover:text-white"><i data-lucide="edit" class="w-4 h-4"></i></button>
-            <button onclick="deleteShuttlecock('${s.id}')" class="p-2 text-slate-400 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            <button onclick="editShuttlecock('${s.id}')" class="p-2 text-slate-400 hover:text-slate-800 dark:hover:text-white"><i data-lucide="edit" class="w-4 h-4 pointer-events-none"></i></button>
+            <button onclick="deleteShuttlecock('${s.id}')" class="p-2 text-slate-400 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4 pointer-events-none"></i></button>
           </div>
         `;
         container.appendChild(card);
@@ -1091,7 +1091,7 @@
                 <p class="text-[9px] text-slate-400 font-black">實收 / 損益</p><p class="text-xs font-bold">$ ${totalIncome}</p>
                 <span class="text-xs font-black ${profit >= 0 ? 'text-emerald-500' : 'text-red-400'}">${profit >= 0 ? '+' : ''}${Math.round(profit)}</span>
               </div>
-              <button onclick="deleteRecordFromHistory(event, '${dateStr}', '${sess.id}')" class="p-2 bg-slate-50 dark:bg-slate-900 hover:bg-red-50 rounded-xl text-slate-400 hover:text-red-500 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+              <button onclick="deleteRecordFromHistory(event, '${dateStr}', '${sess.id}')" class="p-2 bg-slate-50 dark:bg-slate-900 hover:bg-red-50 rounded-xl text-slate-400 hover:text-red-500 transition"><i data-lucide="trash-2" class="w-4 h-4 pointer-events-none"></i></button>
             </div>
           `;
           listContainer.appendChild(card);
