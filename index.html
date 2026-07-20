@@ -457,7 +457,7 @@
 
   <!-- JS 邏輯區塊 -->
   <script>
-    const STORAGE_KEY = 'badminton_profit_tracker_v4';
+    const STORAGE_KEY = 'badminton_profit_tracker_final'; // 固定這個名字，以後改版絕不更動它
     
     let state = {
       theme: 'lime',
@@ -517,46 +517,107 @@
       }
     }
 
-    function loadState() {
+function loadState() {
       const saved = SafeStorage.getItem(STORAGE_KEY);
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
           if (parsed && typeof parsed === 'object') {
-            if (parsed.records) {
-              for (let date in parsed.records) {
-                let rec = parsed.records[date];
-                if (rec && rec.sessions) {
-                  rec.sessions.forEach(s => {
-                    // 升級遷移舊數據格式：將舊有的單一球種與單一用球數結構轉化為陣列
-                    if (!s.shuttleballs) {
-                      s.shuttleballs = [{
-                        shuttlecockId: s.shuttlecockId || 'shuttle-1',
-                        count: s.ballsUsed || 0
-                      }];
-                      delete s.shuttlecockId;
-                      delete s.ballsUsed;
-                    }
-                  });
-                }
-              }
-            }
-            if (parsed.templates) {
-              parsed.templates.forEach(t => {
-                if (!t.shuttleballs) {
-                  t.shuttleballs = [{ shuttlecockId: t.shuttlecockId || 'shuttle-1', count: t.ballsUsed || 0 }];
-                  delete t.shuttlecockId;
-                  delete t.ballsUsed;
-                }
-              });
-            }
-            if (!parsed.templates) parsed.templates = state.templates;
-            state = { ...state, ...parsed };
+            state = { ...state, ...migrateData(parsed) };
           }
-        } catch (e) { console.error("無法讀取本地存檔", e); }
+        } catch (e) { console.error("本地存檔讀取失敗", e); }
       }
     }
 
+    // ⭐ 核心資料整形轉化器：不論多舊的格式，進來通通自動升級，絕不沖掉歷史紀錄
+    function migrateData(oldState) {
+      if (!oldState.records) oldState.records = {};
+      
+      for (let date in oldState.records) {
+        let rec = oldState.records[date];
+        if (rec) {
+          // 情況 A：極早期舊格式（連 sessions 欄位都沒有）
+          if (!rec.sessions) {
+            oldState.records[date] = {
+              sessions: [{
+                id: 'sess-migrated-' + Date.now() + Math.random(),
+                timeSlot: rec.timeSlot || '19-22',
+                courts: rec.courts || 1,
+                courtFee: rec.courtFee || 0,
+                shuttleballs: [{ shuttlecockId: 'shuttle-1', count: rec.ballsUsed || 0 }],
+                fees: rec.fees || [{ price: 200, count: 0 }]
+              }]
+            };
+          } else {
+            // 情況 B：有 sessions，但內部是舊版「單一球種」格式
+            rec.sessions.forEach(s => {
+              if (!s.shuttleballs) {
+                s.shuttleballs = [{
+                  shuttlecockId: s.shuttlecockId || 'shuttle-1',
+                  count: s.ballsUsed || 0
+                }];
+                delete s.shuttlecockId;
+                delete s.ballsUsed;
+              }
+              if (!s.fees) s.fees = [{ price: 200, count: 0 }];
+            });
+          }
+        }
+      }
+      
+      // 確保常用範本與設定正常
+      if (!oldState.templates) oldState.templates = state.templates;
+      if (oldState.templates) {
+        oldState.templates.forEach(t => {
+          if (!t.shuttleballs) {
+            t.shuttleballs = [{ shuttlecockId: t.shuttlecockId || 'shuttle-1', count: t.ballsUsed || 0 }];
+            delete t.shuttlecockId;
+            delete t.ballsUsed;
+          }
+        });
+      }
+      if (!oldState.shuttlecocks || oldState.shuttlecocks.length === 0) oldState.shuttlecocks = state.shuttlecocks;
+      return oldState;
+    }
+
+    // 修正後的檔案匯入函式
+    window.importData = function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          let parsed = JSON.parse(e.target.result);
+          if (parsed && typeof parsed === 'object') {
+            // 先過濾整形，再存入
+            state = migrateData(parsed); 
+            saveState(); 
+            showToast('🎉 資料備份已完美還原！網頁即將重整...', true);
+            setTimeout(() => window.location.reload(), 1200);
+          } else { showToast('❌ 無效的備份檔案！', false); }
+        } catch (err) { showToast('❌ 檔案解析失敗！', false); }
+      };
+      reader.readAsText(file);
+    }
+
+    // 修正後的文字代碼還原函式
+    window.importFromText = function() {
+      const area = document.getElementById('import-text-area');
+      const text = area.value.trim();
+      if (!text) return showToast('❌ 請先貼上備份文字碼', false);
+      try {
+        let parsed = JSON.parse(text);
+        if (parsed && typeof parsed === 'object') {
+          // 先過濾整形，再存入
+          state = migrateData(parsed); 
+          saveState(); 
+          showToast('🎉 文字碼還原成功！網頁即將重整...', true);
+          area.value = '';
+          setTimeout(() => window.location.reload(), 1200);
+        } else { showToast('❌ 備份代碼格式錯誤！', false); }
+      } catch (err) { showToast('❌ 解析失敗，請確認代碼是否完整！', false); }
+    }
+    
     window.onload = function() {
       loadState();
       if (state.theme) changeThemeColor(state.theme, false);
