@@ -67,7 +67,7 @@
         </div>
         <div>
           <h1 class="text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">阿杜羽球記帳</h1>
-          <p class="text-[10px] text-theme font-bold flex items-center gap-1 transition-colors duration-500" id="sync-status">
+          <p class="text-[10px] text-theme font-bold flex items-center gap-1" id="sync-status">
             <span class="w-1.5 h-1.5 bg-theme rounded-full animate-ping"></span>
             本地獨立儲存
           </p>
@@ -119,7 +119,7 @@
           <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-900 pb-3">
             <div class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-theme transition-colors duration-500"></span>
-              <h3 id="detail-date-title" class="text-sm font-black tracking-wider text-slate-800 dark:text-slate-200">2026-07-14 記帳詳情</h3>
+              <h3 id="detail-date-title" class="text-sm font-black tracking-wider text-slate-800 dark:text-slate-200">記帳詳情</h3>
             </div>
             <button id="btn-delete-record" onclick="deleteRecord()" class="hidden text-xs text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 font-bold flex items-center gap-1 transition">
               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> 刪除此日所有場
@@ -151,7 +151,7 @@
 
             <div class="grid grid-cols-2 gap-3">
               <div class="space-y-1.5">
-                <label class="text-xs font-black text-slate-500 dark:text-slate-400">時間段 (可以改 19-22 或 09-12)</label>
+                <label class="text-xs font-black text-slate-500 dark:text-slate-400">時間段 (例如 19-22 或 09-12)</label>
                 <input type="text" id="input-time-slot" oninput="updateActiveSessionMeta()" placeholder="如 19-22" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-2xl py-2.5 px-3.5 text-xs font-bold text-slate-900 dark:text-slate-100 focus:outline-none border-theme-focus transition-all">
               </div>
               <div class="space-y-1.5">
@@ -168,7 +168,6 @@
               </div>
             </div>
 
-            <!-- 🛠️ 已升級：多球種消耗用球編輯器 -->
             <div class="space-y-2 border-t border-slate-100 dark:border-slate-900/60 pt-3">
               <div class="flex justify-between items-center mb-2">
                 <label class="text-xs font-black text-slate-500 dark:text-slate-400">使用羽球明細 (可登記不同球種)</label>
@@ -176,15 +175,13 @@
                   <i data-lucide="plus" class="w-3 h-3"></i> 新增用球紀錄
                 </button>
               </div>
-              <div id="shuttle-rows-container" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
-                <!-- 動態生成多球種填寫列 -->
-              </div>
+              <div id="shuttle-rows-container" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar"></div>
             </div>
 
             <div class="space-y-2 border-t border-slate-100 dark:border-slate-900/60 pt-3">
               <div class="flex justify-between items-center mb-2">
                 <label class="text-xs font-black text-slate-500 dark:text-slate-400">收入明細 (填寫金額與人數)</label>
-                <button onclick="addFeeRow()" class="text-[10px] bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-theme px-2.5 py-1 rounded-full font-black hover:bg-slate-200 dark:hover:bg-slate-850 hover:border-theme/20 transition flex items-center gap-1">
+                <button onclick="addFeeRow()" class="text-[10px] bg-slate-100 dark:bg-slate-900 border border-slate-200 border-slate-800 text-theme px-2.5 py-1 rounded-full font-black hover:bg-slate-200 dark:hover:bg-slate-850 hover:border-theme/20 transition flex items-center gap-1">
                   <i data-lucide="plus" class="w-3 h-3"></i> 新增收費
                 </button>
               </div>
@@ -281,7 +278,7 @@
       <!-- TAB 4: 數據分析看板 -->
       <div id="tab-dashboard" class="tab-content space-y-6 hidden fade-in">
         <div>
-          <h2 class="text-base font-black text-slate-900 dark:text-white">收支數據分析</h2>
+          <h2 class="text-base font-black text-slate-900 dark:text-white">收支數據 analysis</h2>
           <p class="text-[10px] text-slate-500 dark:text-slate-400 font-bold">開團累積收支、平均場次分析</p>
         </div>
 
@@ -343,6 +340,7 @@
 
   </div>
 
+  <!-- 設定視窗 -->
   <div id="settings-modal" class="fixed inset-0 bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 hidden transition-all duration-300">
     <div class="bg-white dark:bg-slate-900/98 border-t sm:border border-slate-200 dark:border-slate-800 rounded-t-[32px] sm:rounded-[32px] w-full max-w-md p-6 text-center space-y-5 shadow-2xl drawer-up sm:scale-100 relative max-h-[90vh] overflow-y-auto custom-scrollbar" style="padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));">
       <div class="w-12 h-1 bg-slate-200 dark:bg-slate-800 rounded-full mx-auto -mt-2 mb-3 sm:hidden"></div>
@@ -354,67 +352,63 @@
       </div>
       <div class="space-y-1">
         <h4 class="text-base font-black text-slate-900 dark:text-white">自訂您的羽球 App</h4>
-        <p class="text-[11px] text-slate-500 dark:text-slate-400">外觀配色與資料備份功能</p>
+        <p class="text-[11px] text-slate-500 dark:text-slate-400">配色、深淺模式與資料結構安全備份</p>
       </div>
 
       <div class="space-y-3 border-t border-slate-150 dark:border-slate-850/60 pt-4 text-left">
         <label class="text-xs font-black text-slate-700 dark:text-slate-300 block">🌓 顯示模式切換：</label>
         <div class="grid grid-cols-2 gap-3 pt-1">
-          <button onclick="toggleAppMode('dark')" id="mode-btn-dark" class="flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border transition-all duration-300">
-            <i data-lucide="moon" class="w-4.5 h-4.5"></i> 深色科技風
-          </button>
-          <button onclick="toggleAppMode('light')" id="mode-btn-light" class="flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border transition-all duration-300">
-            <i data-lucide="sun" class="w-4.5 h-4.5"></i> 活力淺色風
-          </button>
+          <button onclick="toggleAppMode('dark')" id="mode-btn-dark" class="flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border transition-all duration-300"></button>
+          <button onclick="toggleAppMode('light')" id="mode-btn-light" class="flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border transition-all duration-300"></button>
         </div>
       </div>
 
       <div class="space-y-3 border-t border-slate-150 dark:border-slate-850/60 pt-4 text-left">
         <label class="text-xs font-black text-slate-700 dark:text-slate-300 block">🎨 點選更換主題配色：</label>
         <div class="grid grid-cols-5 gap-2 pt-1">
-          <button onclick="changeThemeColor('lime')" class="w-11 h-11 rounded-2xl bg-[#84cc16] border-2 border-white/10 hover:scale-110 active:scale-95 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-lg" title="螢光綠">🟢</button>
-          <button onclick="changeThemeColor('blue')" class="w-11 h-11 rounded-2xl bg-[#3b82f6] border-2 border-white/10 hover:scale-110 active:scale-95 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-lg" title="科技藍">🔵</button>
-          <button onclick="changeThemeColor('red')" class="w-11 h-11 rounded-2xl bg-[#ef4444] border-2 border-white/10 hover:scale-110 active:scale-95 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-lg" title="火焰紅">🔴</button>
-          <button onclick="changeThemeColor('purple')" class="w-11 h-11 rounded-2xl bg-[#a855f7] border-2 border-white/10 hover:scale-110 active:scale-95 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-lg" title="極光紫">🟣</button>
-          <button onclick="changeThemeColor('gold')" class="w-11 h-11 rounded-2xl bg-[#eab308] border-2 border-white/10 hover:scale-110 active:scale-95 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-lg" title="閃耀金">🟡</button>
+          <button onclick="changeThemeColor('lime')" class="w-11 h-11 rounded-2xl bg-[#84cc16] border-2 border-white/10 shadow-lg">🟢</button>
+          <button onclick="changeThemeColor('blue')" class="w-11 h-11 rounded-2xl bg-[#3b82f6] border-2 border-white/10 shadow-lg">🔵</button>
+          <button onclick="changeThemeColor('red')" class="w-11 h-11 rounded-2xl bg-[#ef4444] border-2 border-white/10 shadow-lg">🔴</button>
+          <button onclick="changeThemeColor('purple')" class="w-11 h-11 rounded-2xl bg-[#a855f7] border-2 border-white/10 shadow-lg">🟣</button>
+          <button onclick="changeThemeColor('gold')" class="w-11 h-11 rounded-2xl bg-[#eab308] border-2 border-white/10 shadow-lg">🟡</button>
         </div>
       </div>
 
       <div class="space-y-3 border-t border-slate-150 dark:border-slate-850/60 pt-4 text-left">
         <label class="text-xs font-black text-slate-700 dark:text-slate-300 block flex items-center gap-1">
-          <i data-lucide="database" class="w-4 h-4 text-theme"></i> 💾 資料備份與還原
+          <i data-lucide="database" class="w-4 h-4 text-theme"></i> 💾 資料備份與強制整形還原
         </label>
         <div class="grid grid-cols-2 gap-3 pt-1">
-          <button onclick="exportData()" class="flex items-center justify-center gap-2 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl font-black text-xs text-slate-700 dark:text-slate-300 hover:border-theme/30 hover:text-theme transition">
-            <i data-lucide="download" class="w-4 h-4"></i> 匯出備份檔案
+          <button onclick="exportData()" class="flex items-center justify-center gap-2 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl font-black text-xs text-slate-700 dark:text-slate-300 hover:text-theme transition">
+            <i data-lucide="download" class="w-4 h-4"></i> 匯出Json檔案
           </button>
-          <button onclick="triggerImport()" class="flex items-center justify-center gap-2 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl font-black text-xs text-slate-700 dark:text-slate-300 hover:border-theme/30 hover:text-theme transition">
-            <i data-lucide="upload" class="w-4 h-4"></i> 匯入備份檔案
+          <button onclick="triggerImport()" class="flex items-center justify-center gap-2 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl font-black text-xs text-slate-700 dark:text-slate-300 hover:text-theme transition">
+            <i data-lucide="upload" class="w-4 h-4"></i> 匯入Json檔案
           </button>
         </div>
         <input type="file" id="import-file-input" class="hidden" accept=".json" onchange="importData(event)">
         
         <details class="text-[10px] text-slate-400 dark:text-slate-500 cursor-pointer">
-          <summary class="hover:text-slate-600 dark:hover:text-slate-300 transition font-bold mt-1">iOS/手機備份改用「文字備份碼」</summary>
+          <summary class="hover:text-slate-600 dark:hover:text-slate-300 transition font-bold mt-1">手機改用「文字備份碼」無痛整形轉移</summary>
           <div class="mt-2 space-y-2 bg-slate-50 dark:bg-slate-950 p-3 rounded-2xl border border-slate-200 dark:border-slate-900">
-            <p>複製文字碼可以貼到手機備忘錄存檔：</p>
-            <button onclick="copyBackupText()" class="w-full py-2 bg-theme bg-theme-hover text-slate-950 rounded-xl font-black text-xs transition">
-              一鍵複製備份文字碼
+            <button onclick="copyBackupText()" class="w-full py-2 bg-theme text-slate-950 rounded-xl font-black text-xs transition">
+              一鍵複製目前系統資料碼
             </button>
-            <textarea id="import-text-area" placeholder="在此貼上備份文字碼進行還原..." class="w-full h-16 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-xl p-2 text-[10px] focus:outline-none focus:border-theme"></textarea>
+            <textarea id="import-text-area" placeholder="在此貼上舊代碼，轉化器會自動整形相容欄位..." class="w-full h-16 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-xl p-2 text-[10px] focus:outline-none focus:border-theme"></textarea>
             <button onclick="importFromText()" class="w-full py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl font-black text-xs transition">
-              貼上並一鍵還原資料
+              貼上代碼並強制安全還原
             </button>
           </div>
         </details>
       </div>
 
-      <button onclick="toggleSettingsModal(false)" class="w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 font-black text-xs py-3 rounded-2xl transition">
+      <button onclick="toggleSettingsModal(false)" class="w-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-black text-xs py-3 rounded-2xl transition">
         完成並返回 App
       </button>
     </div>
   </div>
 
+  <!-- 常用模板彈窗 -->
   <div id="template-modal" class="fixed inset-0 bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-6 hidden">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-3xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl">
       <div class="w-12 h-12 bg-theme/20 text-theme rounded-full flex items-center justify-center mx-auto">
@@ -422,28 +416,29 @@
       </div>
       <div class="space-y-1.5 text-left">
         <h4 class="text-sm font-black text-slate-900 dark:text-white">儲存為常用模板</h4>
-        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">請輸入此開團設定的識別名稱：</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400">請輸入此開團設定的識別名稱：</p>
       </div>
       <input type="text" id="input-template-name" placeholder="例如：週二晚兩面 AS50" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-2xl py-2.5 px-3.5 text-xs font-bold text-slate-900 dark:text-slate-100 focus:outline-none border-theme-focus transition-all">
       <div class="flex gap-2">
-        <button onclick="saveTemplate()" class="flex-1 bg-theme text-slate-950 font-black text-xs py-2.5 rounded-2xl hover:bg-theme/90 transition">確認儲存</button>
-        <button onclick="closeTemplateModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs py-2.5 rounded-2xl transition">取消</button>
+        <button onclick="saveTemplate()" class="flex-1 bg-theme text-slate-950 font-black text-xs py-2.5 rounded-2xl transition">確認儲存</button>
+        <button onclick="closeTemplateModal()" class="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs py-2.5 rounded-2xl transition">取消</button>
       </div>
     </div>
   </div>
 
+  <!-- 確認提示元件 -->
   <div id="confirm-modal" class="fixed inset-0 bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-6 hidden">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-3xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl">
-      <div class="w-12 h-12 bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-500/20 text-red-500 dark:text-red-400 rounded-full flex items-center justify-center mx-auto">
+      <div class="w-12 h-12 bg-red-50 dark:bg-red-950/60 border border-red-200 text-red-500 rounded-full flex items-center justify-center mx-auto">
         <i data-lucide="alert-triangle" class="w-6 h-6"></i>
       </div>
       <div class="space-y-1.5">
         <h4 class="text-sm font-black text-slate-900 dark:text-white">確認執行嗎？</h4>
-        <p id="confirm-modal-text" class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">此動作將無法還原，確定要執行嗎？</p>
+        <p id="confirm-modal-text" class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed"></p>
       </div>
       <div class="flex gap-2">
         <button id="confirm-btn-yes" class="flex-1 bg-red-500 text-slate-950 font-black text-xs py-2.5 rounded-2xl hover:bg-red-400 transition">確認執行</button>
-        <button id="confirm-btn-no" onclick="closeConfirmModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs py-2.5 rounded-2xl transition">取消</button>
+        <button id="confirm-btn-no" onclick="closeConfirmModal()" class="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs py-2.5 rounded-2xl transition">取消</button>
       </div>
     </div>
   </div>
@@ -455,52 +450,32 @@
     <span id="toast-text" class="text-xs font-bold text-slate-800 dark:text-slate-100">成功更新資料</span>
   </div>
 
-  <!-- JS 邏輯區塊 -->
   <script>
-    const STORAGE_KEY = 'badminton_profit_tracker_final'; // 固定這個名字，以後改版絕不更動它
+    // ⭐ 核心防護：固定唯一的 LocalStorage 識別代碼，未來後台無論如何改版都不可以動到這一行
+    const STORAGE_KEY = 'badminton_profit_tracker_final'; 
     
     let state = {
-      theme: 'lime',
-      themeMode: 'dark', 
+      theme: 'lime', themeMode: 'dark', 
       shuttlecocks: [
         { id: 'shuttle-1', name: 'Yonex AS-50', price: 840 },
         { id: 'shuttle-2', name: 'RSL No.4', price: 660 }
       ],
       templates: [
-        {
-          id: 'tmpl-default-1',
-          name: '例行雙面 AS-50 團',
-          timeSlot: '19-22',
-          courts: 2,
-          courtFee: 1000,
-          shuttleballs: [{ shuttlecockId: 'shuttle-1', count: 6 }],
-          fees: [{ price: 200, count: 8 }]
-        }
+        { id: 'tmpl-default-1', name: '例行雙面 AS-50 團', timeSlot: '19-22', courts: 2, courtFee: 1000, shuttleballs: [{ shuttlecockId: 'shuttle-1', count: 6 }], fees: [{ price: 200, count: 8 }] }
       ],
       records: {
         '2026-07-14': {
           sessions: [
-            {
-              id: 'sess-default-1',
-              timeSlot: '19-22',
-              courts: 2,
-              courtFee: 1200,
-              shuttleballs: [{ shuttlecockId: 'shuttle-1', count: 6 }],
-              fees: [{ price: 200, count: 10 }]
-            }
+            { id: 'sess-default-1', timeSlot: '19-22', courts: 2, courtFee: 1200, shuttleballs: [{ shuttlecockId: 'shuttle-1', count: 6 }], fees: [{ price: 200, count: 10 }] }
           ]
         }
       },
-      currentDate: '2026-07-14',
-      currentSessionId: 'sess-default-1',
-      currentYear: 2026,
-      currentMonth: 6, 
-      activeTab: 'calendar'
+      currentDate: '2026-07-14', currentSessionId: 'sess-default-1',
+      currentYear: 2026, currentMonth: 6, activeTab: 'calendar'
     };
 
     const SafeStorage = {
-      memoryStore: {},
-      isSandboxBlocked: false,
+      memoryStore: {}, isSandboxBlocked: false,
       getItem(key) { try { return localStorage.getItem(key); } catch (e) { this.isSandboxBlocked = true; return this.memoryStore[key] || null; } },
       setItem(key, value) { try { localStorage.setItem(key, value); return true; } catch (e) { this.isSandboxBlocked = true; this.memoryStore[key] = value; return false; } }
     };
@@ -509,34 +484,22 @@
       const success = SafeStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       const syncStatus = document.getElementById('sync-status');
       if (!success || SafeStorage.isSandboxBlocked) {
-        syncStatus.innerHTML = `<span class="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-ping"></span>暫存中 (離線防護模式)`;
-        syncStatus.className = "text-[10px] text-yellow-500 dark:text-yellow-400 font-bold flex items-center gap-1";
+        syncStatus.innerHTML = `<span class="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-ping"></span>暫存中 (安全記憶體模式)`;
+        syncStatus.className = "text-[10px] text-yellow-500 font-bold flex items-center gap-1";
       } else {
         syncStatus.innerHTML = `<span class="w-1.5 h-1.5 bg-theme rounded-full animate-ping"></span>本地數據已儲存`;
-        syncStatus.className = "text-[10px] text-theme font-bold flex items-center gap-1 transition-colors duration-500";
+        syncStatus.className = "text-[10px] text-theme font-bold flex items-center gap-1";
       }
     }
 
-function loadState() {
-      const saved = SafeStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (parsed && typeof parsed === 'object') {
-            state = { ...state, ...migrateData(parsed) };
-          }
-        } catch (e) { console.error("本地存檔讀取失敗", e); }
-      }
-    }
-
-    // ⭐ 核心資料整形轉化器：不論多舊的格式，進來通通自動升級，絕不沖掉歷史紀錄
+    // ⭐ 升級轉化器：不管匯出或貼上的格式是多舊的版本，一進系統自動強制整形升級！
     function migrateData(oldState) {
+      if (!oldState) oldState = {};
       if (!oldState.records) oldState.records = {};
       
       for (let date in oldState.records) {
         let rec = oldState.records[date];
         if (rec) {
-          // 情況 A：極早期舊格式（連 sessions 欄位都沒有）
           if (!rec.sessions) {
             oldState.records[date] = {
               sessions: [{
@@ -549,75 +512,39 @@ function loadState() {
               }]
             };
           } else {
-            // 情況 B：有 sessions，但內部是舊版「單一球種」格式
             rec.sessions.forEach(s => {
               if (!s.shuttleballs) {
-                s.shuttleballs = [{
-                  shuttlecockId: s.shuttlecockId || 'shuttle-1',
-                  count: s.ballsUsed || 0
-                }];
-                delete s.shuttlecockId;
-                delete s.ballsUsed;
+                s.shuttleballs = [{ shuttlecockId: s.shuttlecockId || 'shuttle-1', count: s.ballsUsed || 0 }];
+                delete s.shuttlecockId; delete s.ballsUsed;
               }
               if (!s.fees) s.fees = [{ price: 200, count: 0 }];
             });
           }
         }
       }
-      
-      // 確保常用範本與設定正常
-      if (!oldState.templates) oldState.templates = state.templates;
-      if (oldState.templates) {
-        oldState.templates.forEach(t => {
-          if (!t.shuttleballs) {
-            t.shuttleballs = [{ shuttlecockId: t.shuttlecockId || 'shuttle-1', count: t.ballsUsed || 0 }];
-            delete t.shuttlecockId;
-            delete t.ballsUsed;
-          }
-        });
-      }
+      if (!oldState.templates) oldState.templates = [];
+      oldState.templates.forEach(t => {
+        if (!t.shuttleballs) {
+          t.shuttleballs = [{ shuttlecockId: t.shuttlecockId || 'shuttle-1', count: t.ballsUsed || 0 }];
+          delete t.shuttlecockId; delete t.ballsUsed;
+        }
+      });
       if (!oldState.shuttlecocks || oldState.shuttlecocks.length === 0) oldState.shuttlecocks = state.shuttlecocks;
       return oldState;
     }
 
-    // 修正後的檔案匯入函式
-    window.importData = function(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
+    function loadState() {
+      const saved = SafeStorage.getItem(STORAGE_KEY);
+      if (saved) {
         try {
-          let parsed = JSON.parse(e.target.result);
+          const parsed = JSON.parse(saved);
           if (parsed && typeof parsed === 'object') {
-            // 先過濾整形，再存入
-            state = migrateData(parsed); 
-            saveState(); 
-            showToast('🎉 資料備份已完美還原！網頁即將重整...', true);
-            setTimeout(() => window.location.reload(), 1200);
-          } else { showToast('❌ 無效的備份檔案！', false); }
-        } catch (err) { showToast('❌ 檔案解析失敗！', false); }
-      };
-      reader.readAsText(file);
+            state = { ...state, ...migrateData(parsed) };
+          }
+        } catch (e) { console.error("存檔解析錯誤", e); }
+      }
     }
 
-    // 修正後的文字代碼還原函式
-    window.importFromText = function() {
-      const area = document.getElementById('import-text-area');
-      const text = area.value.trim();
-      if (!text) return showToast('❌ 請先貼上備份文字碼', false);
-      try {
-        let parsed = JSON.parse(text);
-        if (parsed && typeof parsed === 'object') {
-          // 先過濾整形，再存入
-          state = migrateData(parsed); 
-          saveState(); 
-          showToast('🎉 文字碼還原成功！網頁即將重整...', true);
-          area.value = '';
-          setTimeout(() => window.location.reload(), 1200);
-        } else { showToast('❌ 備份代碼格式錯誤！', false); }
-      } catch (err) { showToast('❌ 解析失敗，請確認代碼是否完整！', false); }
-    }
-    
     window.onload = function() {
       loadState();
       if (state.theme) changeThemeColor(state.theme, false);
@@ -653,15 +580,13 @@ function loadState() {
         btn.className = 'flex flex-col items-center gap-1.5 text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition';
       });
       document.getElementById(`nav-${tabName}`).className = 'flex flex-col items-center gap-1.5 text-theme transition';
-
       if (tabName === 'dashboard') renderDashboardStats();
       else if (tabName === 'history') renderHistoryList();
     }
 
     window.toggleSettingsModal = function(show) {
       const modal = document.getElementById('settings-modal');
-      if (show) modal.classList.remove('hidden');
-      else modal.classList.add('hidden');
+      if (show) modal.classList.remove('hidden'); else modal.classList.add('hidden');
       lucide.createIcons();
     }
 
@@ -674,17 +599,17 @@ function loadState() {
       if (mode === 'light') {
         htmlEl.classList.remove('dark');
         if (lightBtn && darkBtn) {
-          lightBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-theme text-slate-950 border-theme shadow-md scale-102 transition-all duration-300";
-          darkBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 transition-all duration-300";
+          lightBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-theme text-slate-950 border-theme shadow-md scale-102 transition-all";
+          darkBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-slate-100 dark:bg-slate-900 border-slate-200 text-slate-400 transition-all";
         }
       } else {
         htmlEl.classList.add('dark');
         if (darkBtn && lightBtn) {
-          darkBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-theme text-slate-950 border-theme shadow-md scale-102 transition-all duration-300";
-          lightBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 transition-all duration-300";
+          darkBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-theme text-slate-950 border-theme shadow-md scale-102 transition-all";
+          lightBtn.className = "flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-xs border bg-slate-100 dark:bg-slate-900 border-slate-200 text-slate-400 transition-all";
         }
       }
-      if (shouldSave) { saveState(); showToast(`已切換為${mode === 'light' ? '淺色' : '深色'}模式！`, true); }
+      if (shouldSave) { saveState(); showToast(`已變更顯示模式！`, true); }
       lucide.createIcons();
     }
 
@@ -692,14 +617,25 @@ function loadState() {
       document.body.classList.remove('theme-lime', 'theme-blue', 'theme-red', 'theme-purple', 'theme-gold');
       document.body.classList.add(`theme-${themeName}`);
       state.theme = themeName;
-      
       const colorsMap = { lime: '132 204 22', blue: '59 130 246', red: '239 68 68', purple: '168 85 247', gold: '234 179 8' };
       const primaryColor = colorsMap[themeName] || '132 204 22';
       document.documentElement.style.setProperty('--color-primary', primaryColor);
       document.documentElement.style.setProperty('--color-glow', `rgba(${primaryColor}, 0.12)`);
-
-      if (shouldSave) { saveState(); showToast(`已成功套用主題色！`, true); }
+      if (shouldSave) { saveState(); showToast(`主題更換成功！`, true); }
       if (state.themeMode) toggleAppMode(state.themeMode, false);
+    }
+
+    // 🛠️ 核心修正：點擊前後月份時呼叫 renderCalendar() 重新繪製畫面，修復卡死問題
+    window.prevMonth = function() {
+      state.currentMonth--;
+      if (state.currentMonth < 0) { state.currentMonth = 11; state.currentYear--; }
+      renderCalendar(); 
+    }
+
+    window.nextMonth = function() {
+      state.currentMonth++;
+      if (state.currentMonth > 11) { state.currentMonth = 0; state.currentYear++; }
+      renderCalendar(); 
     }
 
     function renderCalendar() {
@@ -735,7 +671,6 @@ function loadState() {
         if (record && record.sessions && record.sessions.length > 0) {
           const sessionsWrapper = document.createElement('div');
           sessionsWrapper.className = 'w-full flex flex-col gap-[2px] px-1 overflow-hidden';
-          
           record.sessions.forEach((sess, sIdx) => {
             if (sIdx < 3) {
               const sessPill = document.createElement('div');
@@ -750,6 +685,18 @@ function loadState() {
       }
     }
 
+    function selectDate(dateStr) {
+      state.currentDate = dateStr;
+      const record = state.records[dateStr];
+      if (record && record.sessions && record.sessions.length > 0) {
+        state.currentSessionId = record.sessions[0].id;
+      } else {
+        state.currentSessionId = '';
+      }
+      renderCalendar();
+      renderSessionDetail();
+    }
+
     function getShuttlecockSinglePrice(shuttlecockId) {
       const shuttle = state.shuttlecocks.find(s => s.id === shuttlecockId);
       return shuttle ? (shuttle.price / 12) : 0;
@@ -757,8 +704,6 @@ function loadState() {
 
     function calculateSessionProfit(session) {
       const totalIncome = session.fees.reduce((sum, item) => sum + (item.price * item.count), 0);
-      
-      // 加總所有羽球的花費
       let totalBallCost = 0;
       if (session.shuttleballs) {
         session.shuttleballs.forEach(sb => {
@@ -771,7 +716,6 @@ function loadState() {
     function renderSessionDetail() {
       const dateStr = state.currentDate;
       document.getElementById('detail-date-title').innerText = `${dateStr} 記帳詳情`;
-
       const record = state.records[dateStr];
       const deleteBtn = document.getElementById('btn-delete-record');
       const form = document.getElementById('session-editor-form');
@@ -779,9 +723,7 @@ function loadState() {
       if (record && record.sessions && record.sessions.length > 0) {
         deleteBtn.classList.remove('hidden');
         form.classList.remove('hidden');
-        
-        const sessionIds = record.sessions.map(s => s.id);
-        if (!sessionIds.includes(state.currentSessionId)) {
+        if (!record.sessions.map(s => s.id).includes(state.currentSessionId)) {
           state.currentSessionId = record.sessions[0].id;
         }
         renderSessionsTabs(record.sessions);
@@ -789,7 +731,7 @@ function loadState() {
       } else {
         deleteBtn.classList.add('hidden');
         document.getElementById('sessions-tabs-container').innerHTML = `
-          <div class="text-slate-400 dark:text-slate-500 text-xs py-3 px-1 font-bold flex items-center gap-1"><i data-lucide="info" class="w-3.5 h-3.5"></i> 請點「新增時段」測試時間、場地數量與即時金額計算。</div>
+          <div class="text-slate-400 dark:text-slate-500 text-xs py-3 px-1 font-bold flex items-center gap-1"><i data-lucide="info" class="w-3.5 h-3.5"></i> 請點「新增時段」測試時間、場面數與即時金額。</div>
         `;
         form.classList.add('hidden');
       }
@@ -799,7 +741,6 @@ function loadState() {
     function renderSessionsTabs(sessions) {
       const container = document.getElementById('sessions-tabs-container');
       container.innerHTML = '';
-
       sessions.forEach((sess, idx) => {
         const profit = calculateSessionProfit(sess);
         const isActive = sess.id === state.currentSessionId;
@@ -807,15 +748,14 @@ function loadState() {
         card.onclick = () => selectSession(sess.id);
         
         if (isActive) {
-          card.className = `flex-shrink-0 bg-theme text-slate-950 px-3.5 py-2 rounded-xl flex flex-col min-w-[105px] border border-theme shadow transition-all text-left`;
+          card.className = `flex-shrink-0 bg-theme text-slate-950 px-3.5 py-2 rounded-xl flex flex-col min-w-[105px] border border-theme shadow text-left`;
         } else {
-          card.className = `flex-shrink-0 bg-white dark:bg-slate-950/60 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-900 px-3.5 py-2 rounded-xl flex flex-col min-w-[105px] hover:border-slate-300 dark:hover:border-slate-800 shadow-sm transition-all text-left`;
+          card.className = `flex-shrink-0 bg-white dark:bg-slate-950/60 text-slate-700 border border-slate-200 dark:border-slate-900 px-3.5 py-2 rounded-xl flex flex-col min-w-[105px] text-left shadow-sm`;
         }
-
         card.innerHTML = `
           <div class="flex items-center justify-between w-full mb-1">
-            <span class="text-[9px] font-black tracking-wider ${isActive ? 'text-slate-950/70' : 'text-slate-400 dark:text-slate-500'}">場次 ${idx + 1}</span>
-            <span class="text-[9px] font-bold px-1.5 py-0.2 rounded-full ${isActive ? 'bg-slate-950 text-theme' : 'bg-slate-200 dark:bg-slate-900 text-slate-400'}">${sess.courts}面場</span>
+            <span class="text-[9px] font-black tracking-wider ${isActive ? 'text-slate-950/70' : 'text-slate-400'}">場次 ${idx + 1}</span>
+            <span class="text-[9px] font-bold px-1.5 py-0.2 rounded-full ${isActive ? 'bg-slate-950 text-theme' : 'bg-slate-200 dark:bg-slate-900 text-slate-400'}">${sess.courts}面</span>
           </div>
           <span class="text-xs font-black truncate max-w-[95px] mb-0.5">${sess.timeSlot || '未填'}</span>
           <span class="text-[9px] font-black ${isActive ? 'text-slate-950' : (profit >= 0 ? 'text-emerald-500' : 'text-red-400')}">NT$ ${Math.round(profit)}</span>
@@ -824,49 +764,35 @@ function loadState() {
       });
     }
 
-    function selectSession(sessionId) {
-      state.currentSessionId = sessionId;
-      renderSessionDetail();
-    }
+    function selectSession(sessionId) { state.currentSessionId = sessionId; renderSessionDetail(); }
 
     function loadSessionData(session) {
       if (!session) return;
       document.getElementById('input-time-slot').value = session.timeSlot || '';
       document.getElementById('input-courts-count').value = session.courts || 1;
       document.getElementById('input-court-fee').value = session.courtFee || '';
-      
       renderShuttleRows(session.shuttleballs || [{ shuttlecockId: state.shuttlecocks[0].id, count: 0 }]);
       renderFeeRows(session.fees || [{ price: 200, count: 0 }]);
       calculateLiveProfit();
     }
 
-    // 渲染多球種消耗填寫列
     function renderShuttleRows(shuttleballs) {
       const container = document.getElementById('shuttle-rows-container');
       container.innerHTML = '';
-
       shuttleballs.forEach((sb, index) => {
         const row = document.createElement('div');
         row.className = 'flex items-center gap-2 bg-slate-50 dark:bg-slate-950 p-2 rounded-xl border border-slate-200 dark:border-slate-900';
-        
         let optionsHtml = '';
         state.shuttlecocks.forEach(s => {
           optionsHtml += `<option value="${s.id}" ${sb.shuttlecockId === s.id ? 'selected' : ''}>${s.name} ($${s.price}/筒)</option>`;
         });
-
         row.innerHTML = `
-          <div class="flex-1">
-            <select onchange="updateShuttleRow(${index}, 'shuttlecockId', this.value)" class="w-full bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none">
-              ${optionsHtml}
-            </select>
-          </div>
+          <div class="flex-1"><select onchange="updateShuttleRow(${index}, 'shuttlecockId', this.value)" class="w-full bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none">${optionsHtml}</select></div>
           <div class="w-20 flex items-center gap-1 border-l border-slate-200 dark:border-slate-800 pl-2">
             <input type="number" value="${sb.count || ''}" oninput="updateShuttleRow(${index}, 'count', this.value)" placeholder="0" class="w-full bg-transparent text-sm font-black text-slate-800 dark:text-slate-200 text-center focus:outline-none">
-            <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500">顆</span>
+            <span class="text-[10px] font-bold text-slate-400">顆</span>
           </div>
-          <button onclick="removeShuttleRow(${index})" class="p-1 text-slate-400 hover:text-red-500 transition">
-            <i data-lucide="x" class="w-4 h-4"></i>
-          </button>
+          <button onclick="removeShuttleRow(${index})" class="p-1 text-slate-400 hover:text-red-500 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
         `;
         container.appendChild(row);
       });
@@ -876,21 +802,20 @@ function loadState() {
     function renderFeeRows(fees) {
       const container = document.getElementById('fee-rows-container');
       container.innerHTML = '';
-      
       fees.forEach((fee, index) => {
         const row = document.createElement('div');
         row.className = 'flex items-center gap-2 bg-slate-50 dark:bg-slate-950 p-2 rounded-xl border border-slate-200 dark:border-slate-900';
         row.innerHTML = `
           <div class="flex-1 flex items-center gap-1">
-            <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500">NT$</span>
+            <span class="text-[10px] font-bold text-slate-400">NT$</span>
             <input type="number" value="${fee.price}" oninput="updateFeeRow(${index}, 'price', this.value)" placeholder="金額" class="w-full bg-transparent text-sm font-black text-slate-800 dark:text-slate-200 focus:outline-none">
           </div>
-          <span class="text-xs text-slate-400 dark:text-slate-600 font-black">×</span>
+          <span class="text-xs text-slate-400 font-black">×</span>
           <div class="w-16 flex items-center gap-1">
-            <input type="number" value="${fee.count}" oninput="updateFeeRow(${index}, 'count', this.value)" placeholder="人數" class="w-full bg-transparent text-sm font-black text-slate-800 dark:text-slate-200 text-center focus:outline-none">
-            <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500">人</span>
+            <input type="number" value="${fee.count}" oninput="updateFeeRow(${index}, 'count', this.value)" placeholder="人數" class="w-full bg-transparent text-sm font-black text-slate-800 text-center dark:text-slate-200 focus:outline-none">
+            <span class="text-[10px] font-bold text-slate-400">人</span>
           </div>
-          <span class="text-xs text-slate-400 dark:text-slate-600 font-black">=</span>
+          <span class="text-xs text-slate-400 font-black">=</span>
           <div class="w-20 text-right text-xs font-black text-theme pr-1">$${fee.price * fee.count}</div>
           <button onclick="removeFeeRow(${index})" class="p-1 text-slate-400 hover:text-red-500 transition"><i data-lucide="x" class="w-4 h-4"></i></button>
         `;
@@ -902,182 +827,94 @@ function loadState() {
     window.addNewSession = function() {
       const dateStr = state.currentDate;
       const newSessId = 'sess-' + Date.now();
-      
-      const newSession = {
-        id: newSessId,
-        timeSlot: '19-22',
-        courts: 1,
-        courtFee: 0,
-        shuttleballs: [{ shuttlecockId: state.shuttlecocks[0].id, count: 0 }],
-        fees: [{ price: 200, count: 0 }]
-      };
-
+      const newSession = { id: newSessId, timeSlot: '19-22', courts: 1, courtFee: 0, shuttleballs: [{ shuttlecockId: state.shuttlecocks[0].id, count: 0 }], fees: [{ price: 200, count: 0 }] };
       if (!state.records[dateStr]) state.records[dateStr] = { sessions: [] };
       state.records[dateStr].sessions.push(newSession);
       state.currentSessionId = newSessId;
-      
-      calculateLiveProfit();
-      renderCalendar();
-      renderSessionDetail();
+      calculateLiveProfit(); renderCalendar(); renderSessionDetail();
     }
 
     window.deleteActiveSession = function() {
-      const dateStr = state.currentDate;
-      const record = state.records[dateStr];
+      const dateStr = state.currentDate; const record = state.records[dateStr];
       if (!record || !record.sessions) return;
-
       showCustomConfirm('確定要刪除此時段場次嗎？', () => {
         record.sessions = record.sessions.filter(s => s.id !== state.currentSessionId);
-        if (record.sessions.length === 0) {
-          delete state.records[dateStr];
-          state.currentSessionId = '';
-        } else {
-          state.currentSessionId = record.sessions[0].id;
-        }
-        saveState();
-        renderCalendar();
-        renderSessionDetail();
-        updateKpis();
-        renderHistoryList();
-        showToast('時段場次已成功移除', true);
+        if (record.sessions.length === 0) { delete state.records[dateStr]; state.currentSessionId = ''; }
+        else { state.currentSessionId = record.sessions[0].id; }
+        saveState(); renderCalendar(); renderSessionDetail(); updateKpis(); renderHistoryList(); showToast('場次已移除', true);
       });
     }
 
     window.updateActiveSessionMeta = function() {
-      const dateStr = state.currentDate;
-      const record = state.records[dateStr];
+      const record = state.records[state.currentDate];
       if (!record || !record.sessions) return;
-
       const activeSess = record.sessions.find(s => s.id === state.currentSessionId);
       if (activeSess) {
         activeSess.timeSlot = document.getElementById('input-time-slot').value;
         activeSess.courts = Number(document.getElementById('input-courts-count').value) || 1;
-        calculateLiveProfit();
-        renderSessionsTabs(record.sessions);
+        calculateLiveProfit(); renderSessionsTabs(record.sessions);
       }
     }
 
-    // --- 羽球列操作群 ---
     window.addShuttleRow = function() {
-      const record = state.records[state.currentDate];
-      if (!record || !record.sessions) return;
-      const activeSess = record.sessions.find(s => s.id === state.currentSessionId);
-      if (activeSess) {
-        if (!activeSess.shuttleballs) activeSess.shuttleballs = [];
-        activeSess.shuttleballs.push({ shuttlecockId: state.shuttlecocks[0].id, count: 0 });
-        renderShuttleRows(activeSess.shuttleballs);
-        calculateLiveProfit();
-      }
-    }
-
-    window.removeShuttlerow = function(index) { // 修正大小寫相容
-      window.removeShuttleRow(index);
+      const activeSess = state.records[state.currentDate]?.sessions.find(s => s.id === state.currentSessionId);
+      if (activeSess) { activeSess.shuttleballs.push({ shuttlecockId: state.shuttlecocks[0].id, count: 0 }); renderShuttleRows(activeSess.shuttleballs); calculateLiveProfit(); }
     }
     window.removeShuttleRow = function(index) {
-      const record = state.records[state.currentDate];
-      if (!record || !record.sessions) return;
-      const activeSess = record.sessions.find(s => s.id === state.currentSessionId);
+      const activeSess = state.records[state.currentDate]?.sessions.find(s => s.id === state.currentSessionId);
       if (activeSess && activeSess.shuttleballs) {
         activeSess.shuttleballs.splice(index, 1);
-        if (activeSess.shuttleballs.length === 0) {
-          activeSess.shuttleballs.push({ shuttlecockId: state.shuttlecocks[0].id, count: 0 });
-        }
-        renderShuttleRows(activeSess.shuttleballs);
-        calculateLiveProfit();
+        if (activeSess.shuttleballs.length === 0) activeSess.shuttleballs.push({ shuttlecockId: state.shuttlecocks[0].id, count: 0 });
+        renderShuttleRows(activeSess.shuttleballs); calculateLiveProfit();
       }
     }
-
     window.updateShuttleRow = function(index, field, value) {
-      const record = state.records[state.currentDate];
-      if (!record || !record.sessions) return;
-      const activeSess = record.sessions.find(s => s.id === state.currentSessionId);
-      if (activeSess && activeSess.shuttleballs && activeSess.shuttleballs[index]) {
-        activeSess.shuttleballs[index][field] = field === 'count' ? (Number(value) || 0) : value;
-        calculateLiveProfit();
-      }
+      const activeSess = state.records[state.currentDate]?.sessions.find(s => s.id === state.currentSessionId);
+      if (activeSess?.shuttleballs?.[index]) { activeSess.shuttleballs[index][field] = field === 'count' ? (Number(value) || 0) : value; calculateLiveProfit(); }
     }
 
-    // --- 收入列操作群 ---
     window.addFeeRow = function() {
-      const record = state.records[state.currentDate];
-      if (!record || !record.sessions) return;
-      const activeSess = record.sessions.find(s => s.id === state.currentSessionId);
-      if (activeSess) {
-        activeSess.fees.push({ price: 200, count: 0 });
-        renderFeeRows(activeSess.fees);
-        calculateLiveProfit();
-      }
+      const activeSess = state.records[state.currentDate]?.sessions.find(s => s.id === state.currentSessionId);
+      if (activeSess) { activeSess.fees.push({ price: 200, count: 0 }); renderFeeRows(activeSess.fees); calculateLiveProfit(); }
     }
-
     window.removeFeeRow = function(index) {
-      const record = state.records[state.currentDate];
-      if (!record || !record.sessions) return;
-      const activeSess = record.sessions.find(s => s.id === state.currentSessionId);
+      const activeSess = state.records[state.currentDate]?.sessions.find(s => s.id === state.currentSessionId);
       if (activeSess) {
         activeSess.fees.splice(index, 1);
         if (activeSess.fees.length === 0) activeSess.fees.push({ price: 0, count: 0 });
-        renderFeeRows(activeSess.fees);
-        calculateLiveProfit();
+        renderFeeRows(activeSess.fees); calculateLiveProfit();
       }
     }
-
     window.updateFeeRow = function(index, field, value) {
-      const record = state.records[state.currentDate];
-      if (!record || !record.sessions) return;
-      const activeSess = record.sessions.find(s => s.id === state.currentSessionId);
-      if (activeSess) {
-        if (!activeSess.fees[index]) activeSess.fees[index] = { price: 0, count: 0 };
+      const activeSess = state.records[state.currentDate]?.sessions.find(s => s.id === state.currentSessionId);
+      if (activeSess?.fees?.[index]) {
         activeSess.fees[index][field] = Number(value) || 0;
-        
         const rowDivs = document.getElementById('fee-rows-container').children;
-        if (rowDivs[index]) {
-          const item = activeSess.fees[index];
-          rowDivs[index].querySelector('.w-20').innerText = `$${item.price * item.count}`;
-        }
+        if (rowDivs[index]) rowDivs[index].querySelector('.w-20').innerText = `$${activeSess.fees[index].price * activeSess.fees[index].count}`;
         calculateLiveProfit();
       }
     }
 
-    // --- 即時預覽計算引擎：多球種、多費率加總連動 ---
     window.calculateLiveProfit = function() {
       const courtFee = Number(document.getElementById('input-court-fee').value) || 0;
-      
-      // 1. 從 DOM 收集即時用球數據
       let shuttleballs = [];
       const sRows = document.getElementById('shuttle-rows-container').children;
       for (let row of sRows) {
-        const selectEl = row.querySelector('select');
-        const inputEl = row.querySelector('input');
-        if (selectEl && inputEl) {
-          shuttleballs.push({
-            shuttlecockId: selectEl.value,
-            count: Number(inputEl.value) || 0
-          });
-        }
+        const sel = row.querySelector('select'); const inp = row.querySelector('input');
+        if (sel && inp) shuttleballs.push({ shuttlecockId: sel.value, count: Number(inp.value) || 0 });
       }
-
-      // 2. 從 DOM 收集即時收入數據
       let fees = [];
       const fRows = document.getElementById('fee-rows-container').children;
       for (let row of fRows) {
         const inputs = row.querySelectorAll('input');
-        if (inputs.length >= 2) {
-          fees.push({ price: Number(inputs[0].value) || 0, count: Number(inputs[1].value) || 0 });
-        }
+        if (inputs.length >= 2) fees.push({ price: Number(inputs[0].value) || 0, count: Number(inputs[1].value) || 0 });
       }
 
-      // 計算核心
       const totalIncome = fees.reduce((sum, item) => sum + (item.price * item.count), 0);
-      
-      let totalBallCost = 0;
-      shuttleballs.forEach(sb => {
-        totalBallCost += sb.count * getShuttlecockSinglePrice(sb.shuttlecockId);
-      });
+      let totalBallCost = 0; shuttleballs.forEach(sb => totalBallCost += sb.count * getShuttlecockSinglePrice(sb.shuttlecockId));
       totalBallCost = Math.round(totalBallCost);
-      
       const profit = totalIncome - (courtFee + totalBallCost);
 
-      // 更新介面看板
       document.getElementById('live-total-income').innerText = `NT$ ${totalIncome}`;
       document.getElementById('live-ball-cost').innerText = `NT$ ${totalBallCost}`;
       document.getElementById('live-court-fee').innerText = `NT$ ${courtFee}`;
@@ -1086,39 +923,18 @@ function loadState() {
       profitEl.innerText = `${profit >= 0 ? '+' : ''}NT$ ${Math.round(profit)}`;
       profitEl.className = profit >= 0 ? 'text-base font-black text-emerald-500' : 'text-base font-black text-red-400';
 
-      // 數據同步暫存到記憶體 state
-      const record = state.records[state.currentDate];
-      if (record && record.sessions) {
-        const activeSess = record.sessions.find(s => s.id === state.currentSessionId);
-        if (activeSess) {
-          activeSess.courtFee = courtFee;
-          activeSess.shuttleballs = shuttleballs;
-          activeSess.fees = fees;
-        }
-      }
+      const activeSess = state.records[state.currentDate]?.sessions.find(s => s.id === state.currentSessionId);
+      if (activeSess) { activeSess.courtFee = courtFee; activeSess.shuttleballs = shuttleballs; activeSess.fees = fees; }
     }
 
-    window.saveRecord = function() {
-      saveState();
-      renderCalendar();
-      renderSessionDetail();
-      updateKpis();
-      renderHistoryList();
-      showToast('今日開團與時段費用資料已儲存！', true);
-    }
+    window.saveRecord = function() { saveState(); renderCalendar(); renderSessionDetail(); updateKpis(); renderHistoryList(); showToast('開團資料已安全儲存！', true); }
 
-    // --- 常用模板功能 (適配多球種結構) ---
     function renderTemplates() {
-      const container = document.getElementById('templates-quick-container');
-      if (!container) return;
-      container.innerHTML = '';
-      if (state.templates.length === 0) {
-        container.innerHTML = `<span class="text-[10px] text-slate-400 dark:text-slate-500 py-1 px-2">尚未建立模板</span>`;
-        return;
-      }
+      const container = document.getElementById('templates-quick-container'); if (!container) return; container.innerHTML = '';
+      if (state.templates.length === 0) { container.innerHTML = `<span class="text-[10px] text-slate-400 py-1 px-2">尚未建立模板</span>`; return; }
       state.templates.forEach(t => {
         const pill = document.createElement('div');
-        pill.className = 'flex-shrink-0 flex items-center bg-slate-100 dark:bg-slate-900 rounded-full pl-3 pr-2 py-1 gap-1 border border-slate-200 dark:border-slate-800 shadow-sm transition hover:border-theme/30';
+        pill.className = 'flex-shrink-0 flex items-center bg-slate-100 dark:bg-slate-900 rounded-full pl-3 pr-2 py-1 gap-1 border border-slate-200 dark:border-slate-800 shadow-sm';
         pill.innerHTML = `
           <button onclick="applyTemplate('${t.id}')" class="text-[10px] font-black text-slate-700 dark:text-slate-300 hover:text-theme pr-1">${t.name}</button>
           <button onclick="deleteTemplate('${t.id}', event)" class="p-0.5 text-slate-400 hover:text-red-500 rounded-full"><i data-lucide="x" class="w-3 h-3"></i></button>
@@ -1127,106 +943,58 @@ function loadState() {
       });
       lucide.createIcons();
     }
-
-    window.openSaveTemplateModal = function() {
-      document.getElementById('input-template-name').value = '';
-      document.getElementById('template-modal').classList.remove('hidden');
-    }
+    window.openSaveTemplateModal = function() { document.getElementById('input-template-name').value = ''; document.getElementById('template-modal').classList.remove('hidden'); }
     window.closeTemplateModal = function() { document.getElementById('template-modal').classList.add('hidden'); }
-
     window.saveTemplate = function() {
-      const name = document.getElementById('input-template-name').value.trim();
-      if (!name) return showToast('❌ 請輸入模板名稱', false);
-
+      const name = document.getElementById('input-template-name').value.trim(); if (!name) return showToast('❌ 請輸入模板名稱', false);
       const timeSlot = document.getElementById('input-time-slot').value || '19-22';
       const courts = Number(document.getElementById('input-courts-count').value) || 1;
       const courtFee = Number(document.getElementById('input-court-fee').value) || 0;
-
       let shuttleballs = [];
       const sRows = document.getElementById('shuttle-rows-container').children;
       for (let row of sRows) {
-        const selectEl = row.querySelector('select');
-        const inputEl = row.querySelector('input');
-        if (selectEl && inputEl) shuttleballs.push({ shuttlecockId: selectEl.value, count: Number(inputEl.value) || 0 });
+        const sel = row.querySelector('select'); const inp = row.querySelector('input');
+        if (sel && inp) shuttleballs.push({ shuttlecockId: sel.value, count: Number(inp.value) || 0 });
       }
-
       let fees = [];
       const fRows = document.getElementById('fee-rows-container').children;
       for (let row of fRows) {
         const inputs = row.querySelectorAll('input');
         if (inputs.length >= 2) fees.push({ price: Number(inputs[0].value) || 0, count: Number(inputs[1].value) || 0 });
       }
-
       state.templates.push({ id: 'tmpl-' + Date.now(), name, timeSlot, courts, courtFee, shuttleballs, fees });
-      saveState();
-      renderTemplates();
-      closeTemplateModal();
-      showToast('🎉 已儲存為模板設定！', true);
+      saveState(); renderTemplates(); closeTemplateModal(); showToast('🎉 範本儲存成功！', true);
     }
-
     window.applyTemplate = function(templateId) {
-      const tmpl = state.templates.find(t => t.id === templateId);
-      if (!tmpl) return;
-
+      const tmpl = state.templates.find(t => t.id === templateId); if (!tmpl) return;
       document.getElementById('input-time-slot').value = tmpl.timeSlot;
       document.getElementById('input-courts-count').value = tmpl.courts;
       document.getElementById('input-court-fee').value = tmpl.courtFee;
-
       const clonedShuttles = JSON.parse(JSON.stringify(tmpl.shuttleballs || []));
       const clonedFees = JSON.parse(JSON.stringify(tmpl.fees));
-      
-      renderShuttleRows(clonedShuttles);
-      renderFeeRows(clonedFees);
-      
-      const record = state.records[state.currentDate];
-      if (record && record.sessions) {
-        const activeSess = record.sessions.find(s => s.id === state.currentSessionId);
-        if (activeSess) {
-          activeSess.timeSlot = tmpl.timeSlot;
-          activeSess.courts = tmpl.courts;
-          activeSess.courtFee = tmpl.courtFee;
-          activeSess.shuttleballs = clonedShuttles;
-          activeSess.fees = clonedFees;
-        }
-        renderSessionsTabs(record.sessions);
-      }
-      calculateLiveProfit();
-      showToast(`⚡ 已套用「${tmpl.name}」！`, true);
+      renderShuttleRows(clonedShuttles); renderFeeRows(clonedFees);
+      const activeSess = state.records[state.currentDate]?.sessions.find(s => s.id === state.currentSessionId);
+      if (activeSess) { activeSess.timeSlot = tmpl.timeSlot; activeSess.courts = tmpl.courts; activeSess.courtFee = tmpl.courtFee; activeSess.shuttleballs = clonedShuttles; activeSess.fees = clonedFees; renderSessionsTabs(state.records[state.currentDate].sessions); }
+      calculateLiveProfit(); showToast(`⚡ 已套用範本！`, true);
     }
+    window.deleteTemplate = function(templateId, event) { if (event) event.stopPropagation(); showCustomConfirm('確定要刪除此模板嗎？', () => { state.templates = state.templates.filter(t => t.id !== templateId); saveState(); renderTemplates(); showToast('模板已刪除', true); }); }
 
-    window.deleteTemplate = function(templateId, event) {
-      if (event) event.stopPropagation();
-      showCustomConfirm('確定要永久刪除此模板嗎？', () => {
-        state.templates = state.templates.filter(t => t.id !== templateId);
-        saveState();
-        renderTemplates();
-        showToast('常用模板已刪除', true);
-      });
-    }
-
-    // --- 備份系統 ---
     window.exportData = function() {
       try {
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", `badminton_backup.json`);
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
-        showToast('💾 備份下載成功！', true);
-      } catch (err) { showToast('❌ 下載失敗，請複製代碼！', false); }
+        const downloadAnchor = document.createElement('a'); downloadAnchor.setAttribute("href", dataStr); downloadAnchor.setAttribute("download", `badminton_backup.json`);
+        document.body.appendChild(downloadAnchor); downloadAnchor.click(); downloadAnchor.remove(); showToast('💾 備份檔案匯出成功！', true);
+      } catch (err) { showToast('❌ 匯出失敗', false); }
     }
     window.triggerImport = function() { document.getElementById('import-file-input').click(); }
     window.importData = function(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+      const file = event.target.files[0]; if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
           const parsed = JSON.parse(e.target.result);
-          if (parsed && parsed.records && parsed.shuttlecocks) {
-            state = parsed; saveState(); showToast('🎉 備份已還原！網頁重新載入...', true);
+          if (parsed && typeof parsed === 'object') {
+            state = migrateData(parsed); saveState(); showToast('🎉 還原成功！網頁即將重整...', true);
             setTimeout(() => window.location.reload(), 1200);
           }
         } catch (err) { showToast('❌ 解析失敗！', false); }
@@ -1234,136 +1002,93 @@ function loadState() {
       reader.readAsText(file);
     }
     window.copyBackupText = function() {
-      const tempInput = document.createElement("textarea");
-      tempInput.value = JSON.stringify(state);
-      document.body.appendChild(tempInput); tempInput.select();
-      document.execCommand("copy"); document.body.removeChild(tempInput);
+      const tempInput = document.createElement("textarea"); tempInput.value = JSON.stringify(state);
+      document.body.appendChild(tempInput); tempInput.select(); document.execCommand("copy"); document.body.removeChild(tempInput);
       showToast('📋 備份代碼已複製！', true);
     }
     window.importFromText = function() {
       const area = document.getElementById('import-text-area');
       try {
         const parsed = JSON.parse(area.value.trim());
-        if (parsed && parsed.records && parsed.shuttlecocks) {
-          state = parsed; saveState(); showToast('🎉 資料還原成功！網頁重新載入...', true);
+        if (parsed && typeof parsed === 'object') {
+          state = migrateData(parsed); saveState(); showToast('🎉 強制轉化還原成功！網頁即將重整...', true);
           setTimeout(() => window.location.reload(), 1200);
         }
-      } catch (err) { showToast('❌ 代碼格式錯誤！', false); }
+      } catch (err) { showToast('❌ 代碼格式解析錯誤！', false); }
     }
 
-    // --- 球種管理模塊 ---
     function renderShuttlecocks() {
-      const container = document.getElementById('shuttlecocks-list-container');
-      container.innerHTML = '';
+      const container = document.getElementById('shuttlecocks-list-container'); container.innerHTML = '';
       state.shuttlecocks.forEach(s => {
-        const card = document.createElement('div');
-        card.className = 'bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-2xl p-4 flex justify-between items-center shadow-sm';
+        const card = document.createElement('div'); card.className = 'bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-900 rounded-2xl p-4 flex justify-between items-center shadow-sm';
         card.innerHTML = `
           <div>
-            <h4 class="text-xs font-black text-slate-800 dark:text-slate-100">${s.name}</h4>
-            <p class="text-[10px] text-slate-500">每筒價格: <strong>$${s.price}</strong> | 單顆自動成本: <strong class="text-theme">$ ${(s.price / 12).toFixed(1)}</strong></p>
+            <h4 class="text-xs font-black">${s.name}</h4>
+            <p class="text-[10px] text-slate-500">每筒價格: <strong>$${s.price}</strong> | 單顆成本: <strong class="text-theme">$ ${(s.price / 12).toFixed(1)}</strong></p>
           </div>
           <div class="flex items-center gap-1">
-            <button onclick="editShuttlecock('${s.id}')" class="p-2 text-slate-400 hover:text-slate-800 dark:hover:text-white transition"><i data-lucide="edit" class="w-4 h-4"></i></button>
-            <button onclick="deleteShuttlecock('${s.id}')" class="p-2 text-slate-400 hover:text-red-500 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            <button onclick="editShuttlecock('${s.id}')" class="p-2 text-slate-400 hover:text-slate-800 dark:hover:text-white"><i data-lucide="edit" class="w-4 h-4"></i></button>
+            <button onclick="deleteShuttlecock('${s.id}')" class="p-2 text-slate-400 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
           </div>
         `;
         container.appendChild(card);
       });
       lucide.createIcons();
     }
-    window.calculateLiveShuttleSingle = function() {
-      const price = Number(document.getElementById('input-shuttle-price').value) || 0;
-      document.getElementById('live-shuttle-single-price').innerText = (price / 12).toFixed(1);
-    }
+    window.calculateLiveShuttleSingle = function() { document.getElementById('live-shuttle-single-price').innerText = ((Number(document.getElementById('input-shuttle-price').value) || 0) / 12).toFixed(1); }
     window.saveShuttlecock = function() {
-      const id = document.getElementById('input-shuttle-id').value;
-      const name = document.getElementById('input-shuttle-name').value.trim();
-      const price = Number(document.getElementById('input-shuttle-price').value) || 0;
+      const id = document.getElementById('input-shuttle-id').value; const name = document.getElementById('input-shuttle-name').value.trim(); const price = Number(document.getElementById('input-shuttle-price').value) || 0;
       if (!name) return showToast('❌ 請輸入球種名稱', false);
-
-      if (id) {
-        const index = state.shuttlecocks.findIndex(s => s.id === id);
-        if (index !== -1) state.shuttlecocks[index] = { id, name, price };
-      } else {
-        state.shuttlecocks.push({ id: 'shuttle-' + Date.now(), name, price });
-      }
+      if (id) { const idx = state.shuttlecocks.findIndex(s => s.id === id); if (idx !== -1) state.shuttlecocks[idx] = { id, name, price }; }
+      else { state.shuttlecocks.push({ id: 'shuttle-' + Date.now(), name, price }); }
       saveState(); cancelShuttlecockEdit(); renderShuttlecocks(); renderSessionDetail(); showToast('球種檔案儲存成功！', true);
     }
     window.editShuttlecock = function(id) {
-      const s = state.shuttlecocks.find(sh => sh.id === id);
-      if (!s) return;
-      document.getElementById('input-shuttle-id').value = s.id;
-      document.getElementById('input-shuttle-name').value = s.name;
-      document.getElementById('input-shuttle-price').value = s.price;
+      const s = state.shuttlecocks.find(sh => sh.id === id); if (!s) return;
+      document.getElementById('input-shuttle-id').value = s.id; document.getElementById('input-shuttle-name').value = s.name; document.getElementById('input-shuttle-price').value = s.price;
       document.getElementById('live-shuttle-single-price').innerText = (s.price / 12).toFixed(1);
       document.getElementById('shuttle-form-title').innerHTML = `<i data-lucide="edit" class="w-3.5 h-3.5 text-theme"></i> 修改球種設定`;
-      document.getElementById('btn-cancel-shuttle-edit').classList.remove('hidden');
-      lucide.createIcons();
+      document.getElementById('btn-cancel-shuttle-edit').classList.remove('hidden'); lucide.createIcons();
     }
     window.cancelShuttlecockEdit = function() {
-      document.getElementById('input-shuttle-id').value = '';
-      document.getElementById('input-shuttle-name').value = '';
-      document.getElementById('input-shuttle-price').value = '';
-      document.getElementById('live-shuttle-single-price').innerText = '0';
+      document.getElementById('input-shuttle-id').value = ''; document.getElementById('input-shuttle-name').value = ''; document.getElementById('input-shuttle-price').value = ''; document.getElementById('live-shuttle-single-price').innerText = '0';
       document.getElementById('shuttle-form-title').innerHTML = `<i data-lucide="plus-circle" class="w-3.5 h-3.5 text-theme"></i> 新增球種`;
-      document.getElementById('btn-cancel-shuttle-edit').classList.add('hidden');
-      lucide.createIcons();
+      document.getElementById('btn-cancel-shuttle-edit').classList.add('hidden'); lucide.createIcons();
     }
-    window.deleteShuttlecock = function(id) {
-      showCustomConfirm('確定要永久刪除這個球種嗎？', () => {
-        state.shuttlecocks = state.shuttlecocks.filter(s => s.id !== id);
-        saveState(); renderShuttlecocks(); renderSessionDetail(); showToast('球種已成功移除', true);
-      });
-    }
+    window.deleteShuttlecock = function(id) { showCustomConfirm('確定要永久刪除這個球種嗎？', () => { state.shuttlecocks = state.shuttlecocks.filter(s => s.id !== id); saveState(); renderShuttlecocks(); renderSessionDetail(); showToast('球種已成功移除', true); }); }
 
-    // --- 開團歷史紀錄清單 ---
     function renderHistoryList() {
-      const listContainer = document.getElementById('history-list-container');
-      listContainer.innerHTML = '';
+      const listContainer = document.getElementById('history-list-container'); listContainer.innerHTML = '';
       const sortedDates = Object.keys(state.records).sort((a, b) => new Date(b) - new Date(a));
-      
-      let totalSessCount = 0;
-      sortedDates.forEach(d => { if (state.records[d].sessions) totalSessCount += state.records[d].sessions.length; });
+      let totalSessCount = 0; sortedDates.forEach(d => { if (state.records[d].sessions) totalSessCount += state.records[d].sessions.length; });
       document.getElementById('history-count').innerText = `共 ${totalSessCount} 場`;
 
       if (sortedDates.length === 0) {
         listContainer.innerHTML = `<div class="text-center py-10 text-slate-400"><i data-lucide="clipboard-x" class="w-10 h-10 mx-auto mb-3 opacity-60"></i><p class="text-xs font-bold">尚無任何開團紀錄</p></div>`;
         lucide.createIcons(); return;
       }
-
       sortedDates.forEach(dateStr => {
-        const record = state.records[dateStr];
-        if (!record.sessions) return;
+        const record = state.records[dateStr]; if (!record.sessions) return;
         record.sessions.forEach(sess => {
           const profit = calculateSessionProfit(sess);
           const totalIncome = sess.fees.reduce((sum, item) => sum + (item.price * item.count), 0);
           const totalPeople = sess.fees.reduce((sum, item) => sum + item.count, 0);
-          
-          // 計算總消耗顆數摘要
-          let ballsTotalCount = 0;
-          if (sess.shuttleballs) sess.shuttleballs.forEach(sb => ballsTotalCount += sb.count);
+          let ballsTotalCount = 0; if (sess.shuttleballs) sess.shuttleballs.forEach(sb => ballsTotalCount += sb.count);
 
-          const card = document.createElement('div');
-          card.className = 'bg-white dark:bg-slate-900/90 rounded-2xl p-4 border border-slate-200 dark:border-slate-850/60 hover:border-theme/30 transition-all cursor-pointer flex justify-between items-center shadow-sm';
+          const card = document.createElement('div'); card.className = 'bg-white dark:bg-slate-900/90 rounded-2xl p-4 border border-slate-200 dark:border-slate-850/60 shadow-sm flex justify-between items-center';
           card.onclick = () => {
             state.currentDate = dateStr; state.currentSessionId = sess.id;
-            const [yr, mo, _] = dateStr.split('-');
-            state.currentYear = parseInt(yr); state.currentMonth = parseInt(mo) - 1;
+            const [yr, mo, _] = dateStr.split('-'); state.currentYear = parseInt(yr); state.currentMonth = parseInt(mo) - 1;
             renderCalendar(); renderSessionDetail(); changeTab('calendar');
           };
           card.innerHTML = `
             <div class="space-y-1">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-black text-slate-800 dark:text-slate-100">${dateStr}</span>
-                <span class="text-[9px] bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-full font-bold">${sess.timeSlot || '時段'} (${sess.courts}面)</span>
-              </div>
-              <p class="text-[10px] text-slate-500">消耗用球: <strong class="text-slate-700 dark:text-slate-300 font-medium">${ballsTotalCount} 顆 (多球種模式)</strong> | 臨打: <strong class="text-slate-700 dark:text-slate-300 font-medium">${totalPeople} 人</strong></p>
+              <div class="flex items-center gap-2"><span class="text-xs font-black">${dateStr}</span><span class="text-[9px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full font-bold">${sess.timeSlot || '時段'} (${sess.courts}面)</span></div>
+              <p class="text-[10px] text-slate-500">消耗用球: <strong>${ballsTotalCount} 顆</strong> | 人數: <strong>${totalPeople} 人</strong></p>
             </div>
             <div class="text-right flex items-center gap-3">
               <div>
-                <p class="text-[9px] text-slate-400 font-black tracking-wider">實收 / 損益</p>
-                <p class="text-xs font-bold text-slate-700 dark:text-slate-300">NT$ ${totalIncome}</p>
+                <p class="text-[9px] text-slate-400 font-black">實收 / 損益</p><p class="text-xs font-bold">$ ${totalIncome}</p>
                 <span class="text-xs font-black ${profit >= 0 ? 'text-emerald-500' : 'text-red-400'}">${profit >= 0 ? '+' : ''}${Math.round(profit)}</span>
               </div>
               <button onclick="deleteRecordFromHistory(event, '${dateStr}', '${sess.id}')" class="p-2 bg-slate-50 dark:bg-slate-900 hover:bg-red-50 rounded-xl text-slate-400 hover:text-red-500 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
@@ -1376,28 +1101,20 @@ function loadState() {
     }
 
     window.deleteRecord = function() {
-      showCustomConfirm('確定要永久刪除此日期的所有時段場次嗎？', () => {
-        delete state.records[state.currentDate]; state.currentSessionId = '';
-        saveState(); renderCalendar(); renderSessionDetail(); updateKpis(); renderHistoryList(); showToast('開團紀錄已成功移除', true);
+      showCustomConfirm('確定要永久刪除此日期的所有場次嗎？', () => {
+        delete state.records[state.currentDate]; state.currentSessionId = ''; saveState(); renderCalendar(); renderSessionDetail(); updateKpis(); renderHistoryList(); showToast('開團紀錄已成功移除', true);
       });
     }
-
     window.deleteRecordFromHistory = function(event, dateStr, sessionId) {
-      event.stopPropagation(); 
+      event.stopPropagation();
       showCustomConfirm(`確定要刪除這筆場次嗎？`, () => {
         const record = state.records[dateStr];
-        if (record && record.sessions) {
+        if (record?.sessions) {
           record.sessions = record.sessions.filter(s => s.id !== sessionId);
-          if (record.sessions.length === 0) {
-            delete state.records[dateStr];
-            if (state.currentDate === dateStr) state.currentSessionId = '';
-          } else if (state.currentDate === dateStr && state.currentSessionId === sessionId) {
-            state.currentSessionId = record.sessions[0].id;
-          }
+          if (record.sessions.length === 0) { delete state.records[dateStr]; if (state.currentDate === dateStr) state.currentSessionId = ''; }
+          else if (state.currentDate === dateStr && state.currentSessionId === sessionId) state.currentSessionId = record.sessions[0].id;
         }
-        saveState(); renderCalendar(); renderSessionDetail(); updateKpis(); renderHistoryList();
-        if (state.activeTab === 'dashboard') renderDashboardStats();
-        showToast('場次已成功移除', true);
+        saveState(); renderCalendar(); renderSessionDetail(); updateKpis(); renderHistoryList(); if (state.activeTab === 'dashboard') renderDashboardStats(); showToast('場次已移除', true);
       });
     }
 
@@ -1405,18 +1122,12 @@ function loadState() {
       let totalProfit = 0, totalSessions = 0, totalBalls = 0;
       Object.values(state.records).forEach(record => {
         if (record.sessions) {
-          record.sessions.forEach(sess => { 
-            totalProfit += calculateSessionProfit(sess); 
-            totalSessions++; 
-            if (sess.shuttleballs) sess.shuttleballs.forEach(sb => totalBalls += sb.count);
-          });
+          record.sessions.forEach(sess => { totalProfit += calculateSessionProfit(sess); totalSessions++; if (sess.shuttleballs) sess.shuttleballs.forEach(sb => totalBalls += sb.count); });
         }
       });
-      const profitEl = document.getElementById('kpi-profit');
-      profitEl.innerText = `${totalProfit >= 0 ? '+' : ''}NT$ ${Math.round(totalProfit)}`;
+      const profitEl = document.getElementById('kpi-profit'); profitEl.innerText = `${totalProfit >= 0 ? '+' : ''}NT$ ${Math.round(totalProfit)}`;
       profitEl.className = `text-sm font-black ${totalProfit >= 0 ? 'text-theme' : 'text-red-400'}`;
-      document.getElementById('kpi-count').innerText = `${totalSessions} 場`;
-      document.getElementById('kpi-balls').innerText = `${totalBalls} 顆`;
+      document.getElementById('kpi-count').innerText = `${totalSessions} 場`; document.getElementById('kpi-balls').innerText = `${totalBalls} 顆`;
     }
 
     function renderDashboardStats() {
@@ -1424,60 +1135,32 @@ function loadState() {
       Object.values(state.records).forEach(record => {
         if (record.sessions) {
           record.sessions.forEach(sess => {
-            totalIncome += sess.fees.reduce((sum, item) => sum + (item.price * item.count), 0);
-            totalCourt += sess.courtFee;
-            if (sess.shuttleballs) {
-              sess.shuttleballs.forEach(sb => {
-                totalBallsCost += sb.count * getShuttlecockSinglePrice(sb.shuttlecockId);
-              });
-            }
-            totalProfit += calculateSessionProfit(sess);
-            totalCourtsCount += (sess.courts || 1); sessionCount++;
+            totalIncome += sess.fees.reduce((sum, item) => sum + (item.price * item.count), 0); totalCourt += sess.courtFee;
+            if (sess.shuttleballs) sess.shuttleballs.forEach(sb => totalBallsCost += sb.count * getShuttlecockSinglePrice(sb.shuttlecockId));
+            totalProfit += calculateSessionProfit(sess); totalCourtsCount += (sess.courts || 1); sessionCount++;
           });
         }
       });
-      document.getElementById('stat-total-income').innerText = `NT$ ${totalIncome}`;
-      document.getElementById('stat-total-court').innerText = `NT$ ${totalCourt}`;
-      document.getElementById('stat-total-balls-cost').innerText = `NT$ ${Math.round(totalBallsCost)}`;
-      document.getElementById('stat-total-courts').innerText = `${totalCourtsCount} 面`;
-      const profitEl = document.getElementById('stat-total-profit');
-      profitEl.innerText = `${totalProfit >= 0 ? '+' : ''}NT$ ${Math.round(totalProfit)}`;
+      document.getElementById('stat-total-income').innerText = `NT$ ${totalIncome}`; document.getElementById('stat-total-court').innerText = `NT$ ${totalCourt}`;
+      document.getElementById('stat-total-balls-cost').innerText = `NT$ ${Math.round(totalBallsCost)}`; document.getElementById('stat-total-courts').innerText = `${totalCourtsCount} 面`;
+      const profitEl = document.getElementById('stat-total-profit'); profitEl.innerText = `${totalProfit >= 0 ? '+' : ''}NT$ ${Math.round(totalProfit)}`;
       profitEl.className = `text-base font-black ${totalProfit >= 0 ? 'text-theme' : 'text-red-400'}`;
-      
-      const avgIncome = sessionCount > 0 ? Math.round(totalIncome / sessionCount) : 0;
-      const avgProfit = sessionCount > 0 ? Math.round(totalProfit / sessionCount) : 0;
-      document.getElementById('stat-avg-income').innerText = `NT$ ${avgIncome}`;
-      document.getElementById('stat-avg-profit').innerText = `${avgProfit >= 0 ? '+' : ''}NT$ ${avgProfit}`;
+      const avgIncome = sessionCount > 0 ? Math.round(totalIncome / sessionCount) : 0; const avgProfit = sessionCount > 0 ? Math.round(totalProfit / sessionCount) : 0;
+      document.getElementById('stat-avg-income').innerText = `NT$ ${avgIncome}`; document.getElementById('stat-avg-profit').innerText = `${avgProfit >= 0 ? '+' : ''}NT$ ${avgProfit}`;
       document.getElementById('stat-avg-profit').className = `font-black ${avgProfit >= 0 ? 'text-theme' : 'text-red-400'}`;
     }
 
     let activeConfirmCallback = null;
-    window.showCustomConfirm = function(text, onConfirm) {
-      document.getElementById('confirm-modal-text').innerText = text;
-      document.getElementById('confirm-modal').classList.remove('hidden');
-      activeConfirmCallback = onConfirm;
-    }
+    window.showCustomConfirm = function(text, onConfirm) { document.getElementById('confirm-modal-text').innerText = text; document.getElementById('confirm-modal').classList.remove('hidden'); activeConfirmCallback = onConfirm; }
     window.closeConfirmModal = function() { document.getElementById('confirm-modal').classList.add('hidden'); }
     document.getElementById('confirm-btn-yes').onclick = function() { if (activeConfirmCallback) activeConfirmCallback(); closeConfirmModal(); }
 
     window.showToast = function(msg, isSuccess = true) {
-      const toast = document.getElementById('toast-notification');
-      const icon = document.getElementById('toast-icon');
-      document.getElementById('toast-text').innerText = msg;
-      if (isSuccess) {
-        icon.setAttribute('data-lucide', 'check');
-        document.getElementById('toast-icon-bg').className = 'w-5 h-5 rounded-full bg-theme/20 text-theme flex items-center justify-center';
-      } else {
-        icon.setAttribute('data-lucide', 'alert-circle');
-        document.getElementById('toast-icon-bg').className = 'w-5 h-5 rounded-full bg-red-400/20 text-red-500 flex items-center justify-center';
-      }
-      lucide.createIcons();
-      toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-20px]');
-      toast.classList.add('opacity-100', 'translate-y-0');
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-20px]');
-        toast.classList.remove('opacity-100', 'translate-y-0');
-      }, 3000);
+      const toast = document.getElementById('toast-notification'); const icon = document.getElementById('toast-icon'); document.getElementById('toast-text').innerText = msg;
+      if (isSuccess) { icon.setAttribute('data-lucide', 'check'); document.getElementById('toast-icon-bg').className = 'w-5 h-5 rounded-full bg-theme/20 text-theme flex items-center justify-center'; }
+      else { icon.setAttribute('data-lucide', 'alert-circle'); document.getElementById('toast-icon-bg').className = 'w-5 h-5 rounded-full bg-red-400/20 text-red-500 flex items-center justify-center'; }
+      lucide.createIcons(); toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-20px]'); toast.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => { toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-20px]'); toast.classList.remove('opacity-100', 'translate-y-0'); }, 3000);
     }
   </script>
 </body>
